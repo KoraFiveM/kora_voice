@@ -240,7 +240,7 @@ Config.state = {
 -- Defaults only. Every one goes through QB.keybind.add, so all of them appear
 -- in FiveM's own key-binding settings and every player can rebind them.
 Config.keybinds = {
-    cycleProximity = 'Z',          -- step whisper -> normal -> shout
+    cycleProximity = 'GRAVE',      -- step whisper -> normal -> shout (the grave/tilde key)
     radioTalk      = 'CAPITAL',    -- push-to-talk on the radio channel (caps lock)
     megaphone      = '',           -- unbound by default; a megaphone is a vehicle/prop feature
 }

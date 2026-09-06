@@ -174,6 +174,9 @@ h.test('the three keys are registered and rebindable', function()
         h.assertTrue(type(bind.description) == 'string' and #bind.description > 0,
             ('%s needs a description to appear in FiveMs key settings'):format(name))
     end
+
+    h.assertEqual(net.keybinds.qbvoice_proximity.defaultKey, 'GRAVE',
+        'the range cycle defaults to the grave key')
 end)
 
 h.test('the radio key does nothing at all with no published channel', function()
