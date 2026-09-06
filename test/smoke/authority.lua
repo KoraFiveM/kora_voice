@@ -227,6 +227,16 @@ h.test('the pma-voice net event still works for an eligible caller', function()
     h.assertEqual(Voice.store.getRadio(OFFICER), 2, 'the legacy event reaches the real request path')
 end)
 
+h.test('pma-voice events share the same bounded client request path', function()
+    reset()
+    for _ = 1, Config.rateLimit.radio.max do
+        net.fireNet('pma-voice:setPlayerRadio', OFFICER, 5)
+    end
+    net.fireNet('pma-voice:setPlayerRadio', OFFICER, 6)
+
+    h.assertEqual(Voice.store.getRadio(OFFICER), 5, 'the compatibility event cannot bypass the shared limiter')
+end)
+
 h.test('a stale leave cannot kick a player off the channel they just joined', function()
     reset()
     Voice.api.assign(OFFICER, 5)

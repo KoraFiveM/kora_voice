@@ -38,10 +38,11 @@ Every rule below follows from that one sentence.
    with exactly what the server pushed. A merge, an append, or a locally-derived
    member is a self-granted voice target.
 
-5. **Every client-facing callback carries a `rateLimit`.** A join request is the
-   one message a client sends unprompted, and an unlimited one lets a client walk
-   every channel id looking for an open frequency. `test/smoke/authority.lua`
-   fails if a registration appears without one.
+5. **Every client-facing route shares the API limiter.** Both qblib callbacks
+   and pma-voice compatibility events must enter through
+   `Voice.api.requestClient`/the matching client-removal helper. Callbacks keep
+   their qblib `rateLimit` as defence in depth. `test/smoke/authority.lua`
+   exercises both transports.
 
 6. **There is no client-reachable way to JOIN a call.** Leaving is fine (it
    grants no audio); joining would be a client asking to listen to somebody

@@ -14,7 +14,7 @@
 Voice = Voice or {}
 
 QB.callback.register('qbvoice:requestRadio', function(src, channel)
-    local ok, reason = Voice.api.request(src, channel)
+    local ok, reason = Voice.api.requestClient(src, channel)
     if ok then return true end
 
     -- Two values, and the client distinguishes them: `false` is a refusal with
@@ -25,8 +25,7 @@ QB.callback.register('qbvoice:requestRadio', function(src, channel)
 end, { rateLimit = Config.rateLimit.radio })
 
 QB.callback.register('qbvoice:leaveRadio', function(src)
-    Voice.api.request(src, nil)
-    return true
+    return Voice.api.requestClient(src, nil)
 end, { rateLimit = Config.rateLimit.radio })
 
 -- Calls are NOT client-requestable. A call channel is negotiated by a phone
@@ -35,8 +34,7 @@ end, { rateLimit = Config.rateLimit.radio })
 -- a client asking to listen to somebody else's phone call, so leaving is the
 -- only call operation exposed here -- hanging up on yourself grants no audio.
 QB.callback.register('qbvoice:leaveCall', function(src)
-    Voice.api.removeFromCall(src, nil)
-    return true
+    return Voice.api.removeCallClient(src, nil)
 end, { rateLimit = Config.rateLimit.call })
 
 ---Re-publishes everything one player needs.

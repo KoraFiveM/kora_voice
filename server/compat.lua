@@ -54,21 +54,21 @@ end
 -- --- inbound events (client -> server) --------------------------------------
 
 RegisterNetEvent('pma-voice:setPlayerRadio', function(channel)
-    Voice.api.request(source, channel)
+    Voice.api.requestClient(source, channel)
 end)
 
 RegisterNetEvent('pma-voice:addPlayerToRadio', function(channel)
-    Voice.api.request(source, channel)
+    Voice.api.requestClient(source, channel)
 end)
 
 RegisterNetEvent('pma-voice:removePlayerFromRadio', function(channel)
-    Voice.api.removeFromRadio(source, channel)
+    Voice.api.removeRadioClient(source, channel)
 end)
 
 -- Joining a call is not client-requestable here; see server/net.lua. Leaving
 -- one is, because hanging up grants no audio.
 RegisterNetEvent('pma-voice:removePlayerFromCall', function(channel)
-    Voice.api.removeFromCall(source, channel)
+    Voice.api.removeCallClient(source, channel)
 end)
 
 -- --- export identity --------------------------------------------------------

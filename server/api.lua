@@ -21,6 +21,29 @@ Voice = Voice or {}
 Voice.api = {}
 
 local A = Voice.api
+local clientRequests = {}
+
+local function consumeClientRequest(src, kind)
+    local limit = Config.rateLimit[kind]
+    if not limit then return true end
+
+    local key = ('%s:%s'):format(src, kind)
+    local bucket = clientRequests[key] or {}
+    local current = GetGameTimer()
+    local cutoff = current - limit.window
+    local retained = {}
+    for i = 1, #bucket do
+        if bucket[i] > cutoff then retained[#retained + 1] = bucket[i] end
+    end
+    if #retained >= limit.max then
+        clientRequests[key] = retained
+        return false
+    end
+
+    retained[#retained + 1] = current
+    clientRequests[key] = retained
+    return true
+end
 
 ---Applies a radio membership change and publishes the consequences.
 ---
@@ -123,6 +146,31 @@ function A.request(src, channel)
     return true
 end
 
+---Rate-limited client request shared by qblib callbacks and pma-voice events.
+---@param src integer
+---@param channel integer|nil
+---@return boolean ok, string|nil reason
+function A.requestClient(src, channel)
+    if not consumeClientRequest(src, 'radio') then return false, 'Voice request limit reached.' end
+    return A.request(src, channel)
+end
+
+---@param src integer
+---@param channel integer|nil
+---@return boolean removed, string|nil reason
+function A.removeRadioClient(src, channel)
+    if not consumeClientRequest(src, 'radio') then return false, 'Voice request limit reached.' end
+    return A.removeFromRadio(src, channel)
+end
+
+---@param src integer
+---@param channel integer|nil
+---@return boolean removed, string|nil reason
+function A.removeCallClient(src, channel)
+    if not consumeClientRequest(src, 'call') then return false, 'Voice request limit reached.' end
+    return A.removeFromCall(src, channel)
+end
+
 ---Assigns a call channel. TRUSTED.
 ---
 ---Calls are not restriction-checked at all. A call channel is a phone number
@@ -180,6 +228,8 @@ end
 ---Forgets a disconnecting player and re-pushes the rosters they were in.
 ---@param src integer
 function A.drop(src)
+    clientRequests[('%s:radio'):format(src)] = nil
+    clientRequests[('%s:call'):format(src)] = nil
     local radio, call = Voice.store.forget(src)
     Voice.policy.forget(src)
 
