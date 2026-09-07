@@ -269,3 +269,6 @@ Config.rateLimit = {
     call  = { max = 10, window = 10000 },
     sync  = { max = 5,  window = 10000 }, -- resource-restart resync
 }
+
+-- Registers this resource-owned configuration with qblib without changing its public Config table.
+if QB and QB.config and QB.config.adopt then Config = QB.config.adopt(Config) end
