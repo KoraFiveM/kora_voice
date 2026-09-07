@@ -71,6 +71,7 @@ function M.install()
     function _G.GetInvokingResource() return nil end
     function _G.GetCurrentResourceName() return 'qbvoice' end
     function _G.GetHashKey(value) return #tostring(value) end
+    function _G.joaat(value) return #tostring(value) end
     function _G.GetGameTimer() return math.floor(os.clock() * 1000) end
 
     -- No other resource is running, so the pma-voice conflict check finds

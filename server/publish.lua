@@ -73,7 +73,7 @@ local function byBucket(members)
     for _, src in ipairs(members) do
         local bucket = bucketOf(src)
         groups[bucket] = groups[bucket] or {}
-        table.insert(groups[bucket], src)
+        groups[bucket][#groups[bucket] + 1] = src
     end
 
     return groups
