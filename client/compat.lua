@@ -43,7 +43,7 @@ local surface = {
 }
 
 for name, fn in pairs(surface) do
-    AddEventHandler(('__cfx_export_pma-voice_%s'):format(name), function(setCB) setCB(fn) end)
+    QB.compat.provideExport('pma-voice', name, fn)
 end
 
 Voice.compat = Voice.compat or {}

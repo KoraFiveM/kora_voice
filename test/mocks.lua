@@ -198,6 +198,11 @@ function M.install()
     local callbackResponses = {}
 
     _G.QB = {
+        compat = { provideExport = function(identity, name, fn)
+            AddEventHandler(('__cfx_export_%s_%s'):format(identity, name), function(setCallback)
+                setCallback(fn)
+            end)
+        end },
         events = {
             push = function(src, name, payload)
                 pushes[#pushes + 1] = { src = src, name = name, payload = payload }
