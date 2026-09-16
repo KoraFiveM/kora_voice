@@ -76,11 +76,11 @@ end)
 -- Only the SERVER half of pma-voice's surface. The client half is registered
 -- from client/compat.lua, in the client realm, where those exports live.
 local surface = {
-    setPlayerRadio = function(src, channel) return Voice.api.assign(src, channel) end,
-    addPlayerToRadio = function(src, channel) return Voice.api.assign(src, channel) end,
-    removePlayerFromRadio = function(src, channel) return Voice.api.removeFromRadio(src, channel) end,
-    setPlayerCall = function(src, channel) return Voice.api.assignCall(src, channel) end,
-    removePlayerFromCall = function(src, channel) return Voice.api.removeFromCall(src, channel) end,
+    setPlayerRadio = Voice.api.assign,
+    addPlayerToRadio = Voice.api.assign,
+    removePlayerFromRadio = Voice.api.removeFromRadio,
+    setPlayerCall = Voice.api.assignCall,
+    removePlayerFromCall = Voice.api.removeFromCall,
 
     getPlayersInRadioChannel = function(channel)
         local out = {}

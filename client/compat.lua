@@ -23,7 +23,7 @@ local surface = {
     end,
     setRadioVolume = function(volume) return Voice.state.setVolume('radio', volume) end,
     setCallVolume = function(volume) return Voice.state.setVolume('call', volume) end,
-    setTalkingMode = function(mode) return Voice.proximity.set(mode) end,
+    setTalkingMode = Voice.proximity.set,
 
     -- Requests, not assertions -- the same as qbvoice's own client exports.
     -- pma-voice's client `addPlayerToRadio` also went through its server, so
