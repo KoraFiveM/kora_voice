@@ -271,4 +271,13 @@ Config.rateLimit = {
 }
 
 -- Registers this resource-owned configuration with qblib without changing its public Config table.
-if QB and QB.config and QB.config.adopt then Config = QB.config.adopt(Config) end
+if QB and QB.config and QB.config.adopt then
+    Config.radio.restricted = QB.config.map(Config.radio.restricted, nil, {
+        keyType = 'integer',
+        scope = 'server',
+        live = true,
+        label = 'Restricted radio channels',
+        description = 'Defines server-authoritative access rules for restricted integer radio channels. Each row key is a channel ID; its value may name allowed job names or job types and may require on-duty status. Channels omitted from this table remain open, and saved changes apply immediately on the server without publishing these rules to clients.',
+    })
+    Config = QB.config.adopt(Config)
+end
