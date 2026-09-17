@@ -277,7 +277,7 @@ if QB and QB.config and QB.config.adopt then
         scope = 'server',
         live = true,
         label = 'Restricted radio channels',
-        description = 'Defines server-authoritative access rules for restricted integer radio channels. Each row key is a channel ID; its value may name allowed job names or job types and may require on-duty status. Channels omitted from this table remain open, and saved changes apply immediately on the server without publishing these rules to clients.',
+        description = 'Controls who may join each restricted radio channel. Each row key is a channel number; its value lists allowed jobs or job types and can require on-duty status. Channels omitted here remain open. Saved changes govern subsequent join requests without a resource restart; they do not remove players already listening. These rules remain server-only.',
     })
     Config = QB.config.adopt(Config)
 end
