@@ -22,6 +22,7 @@ Voice.api = {}
 
 local A = Voice.api
 local clientRequests = {}
+local characterRadio = {}
 
 local function consumeClientRequest(src, kind)
     local limit = Config.rateLimit[kind]
@@ -53,10 +54,12 @@ end
 ---one.
 ---@param src integer
 ---@param channel integer|nil
+---@param characterOwned boolean|nil
 ---@return boolean changed
-local function commitRadio(src, channel)
+local function commitRadio(src, channel, characterOwned)
     local previous, current = Voice.store.setRadio(src, channel)
     if previous == current then return false end
+    characterRadio[src] = characterOwned or nil
 
     Voice.publish.membership(src)
 
@@ -114,6 +117,7 @@ function A.assign(src, channel)
         return false, ('qbvoice: %s is not a valid radio channel'):format(tostring(channel))
     end
 
+    characterRadio[src] = nil
     commitRadio(src, normalised)
     return true
 end
@@ -133,7 +137,7 @@ function A.request(src, channel)
         return true
     end
 
-    local allowed, reason = Voice.policy.canJoin(src, normalised)
+    local allowed, reason, characterOwned = Voice.policy.canJoin(src, normalised)
     if not allowed then
         -- Nothing is committed and nothing is published. The client's own state
         -- bag still says whatever it said before, which is the point: a refused
@@ -142,7 +146,7 @@ function A.request(src, channel)
         return false, reason or Config.radio.refusedMessage
     end
 
-    commitRadio(src, normalised)
+    commitRadio(src, normalised, characterOwned)
     return true
 end
 
@@ -228,6 +232,7 @@ end
 ---Forgets a disconnecting player and re-pushes the rosters they were in.
 ---@param src integer
 function A.drop(src)
+    characterRadio[src] = nil
     clientRequests[('%s:radio'):format(src)] = nil
     clientRequests[('%s:call'):format(src)] = nil
     local radio, call = Voice.store.forget(src)
@@ -242,6 +247,10 @@ end
 
 AddEventHandler('playerDropped', function()
     A.drop(source)
+end)
+
+AddEventHandler('QBCore:Server:OnPlayerUnload', function(src)
+    if characterRadio[src] then commitRadio(src, nil) end
 end)
 
 -- --- exports ----------------------------------------------------------------

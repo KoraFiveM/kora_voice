@@ -124,6 +124,7 @@ end
 ---@param src integer
 ---@param channel integer
 ---@return boolean allowed, string|nil reason
+---@return boolean|nil characterOwned static job-rule approval
 function P.canJoin(src, channel)
     for _, entry in ipairs(hooks) do
         if entry then
@@ -150,7 +151,8 @@ function P.canJoin(src, channel)
     local record = Voice.channels.restriction(channel)
     if not record then return true end
 
-    if Voice.channels.jobSatisfies(record, jobOf(src)) then return true end
+    -- Hooks and grants keep their provider's lifetime; this approval belongs to the character.
+    if Voice.channels.jobSatisfies(record, jobOf(src)) then return true, nil, true end
 
     return false, Config.radio.refusedMessage
 end
