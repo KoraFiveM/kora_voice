@@ -212,4 +212,67 @@ h.test('membership changes announce themselves to other server resources', funct
     h.assertEqual(seen[2].previous, 7, 'and names the channel left')
 end)
 
+h.test('a bucket change republishes both rosters without changing membership', function()
+    reset()
+    Voice.api.assign(A, 7); Voice.api.assign(B, 7); Voice.api.assign(C, 8)
+    Voice.api.assignCall(A, 5551234); Voice.api.assignCall(B, 5551234)
+    net.clear()
+    net.setBucket(B, 12)
+    TriggerEvent('qbvoice:server:bucketChanged', B)
+
+    h.assertEqual(#net.pushesTo(A), 2, 'old bucket receives both rosters')
+    h.assertEqual(#net.pushesTo(B), 2, 'new bucket receives both rosters')
+    for _, push in ipairs(net.pushesTo(A)) do
+        h.assertEqual(#push.payload.members, 1)
+        h.assertEqual(push.payload.members[1], A)
+    end
+    for _, push in ipairs(net.pushesTo(B)) do
+        h.assertEqual(#push.payload.members, 1)
+        h.assertEqual(push.payload.members[1], B)
+    end
+    h.assertEqual(#net.pushesTo(C), 0, 'unrelated channel is unchanged')
+    h.assertEqual(#net.bagWrites, 0, 'membership bags are unchanged')
+    h.assertEqual(Voice.store.getRadio(B), 7)
+    h.assertEqual(Voice.store.getCall(B), 5551234)
+    h.assertEqual(net.netHandlers['qbvoice:server:bucketChanged'], nil, 'notification is server-local')
+
+    net.clear()
+    net.setBucket(B, 0)
+    TriggerEvent('qbvoice:server:bucketChanged', B)
+    for _, push in ipairs(net.pushes) do h.assertEqual(#push.payload.members, 2, 'restored peers are republished') end
+end)
+
+h.test('trusted server refresh supports raw setters and rejects missing sources', function()
+    reset()
+    Voice.api.assign(A, 7); Voice.api.assign(B, 7)
+    net.clear()
+    net.setBucket(B, 12)
+    local refresh = net.registeredExports.refreshVoiceTargets
+    h.assertTrue(type(refresh) == 'function', 'server refresh export exists')
+    h.assertEqual(refresh(tostring(B)), true)
+    h.assertEqual(#net.pushesTo(A)[1].payload.members, 1)
+    net.clear()
+    local ok, reason = refresh(nil)
+    h.assertEqual(ok, false)
+    h.assertEqual(type(reason), 'string')
+    h.assertEqual(refresh(99), true, 'a source without memberships needs no publication')
+    h.assertEqual(#net.pushes, 0)
+    h.assertEqual(#net.bagWrites, 0)
+end)
+
+h.test('bucket refresh preserves cross-instance channels when enforcement is disabled', function()
+    reset()
+    Voice.api.assign(A, 7); Voice.api.assign(B, 7)
+    net.clear()
+    Config.buckets.enforce = false
+    net.setBucket(B, 12)
+    TriggerEvent('qbvoice:server:bucketChanged', B)
+    local refresh = net.registeredExports.refreshVoiceTargets
+    h.assertTrue(type(refresh) == 'function')
+    h.assertEqual(refresh(B), true)
+    Config.buckets.enforce = true
+    h.assertEqual(#net.pushes, 0)
+    h.assertEqual(#net.bagWrites, 0)
+end)
+
 h.report('publish')

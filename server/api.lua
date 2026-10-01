@@ -378,3 +378,20 @@ end)
 exports('isChannelRestricted', function(channel)
     return Voice.channels.isRestricted(Voice.channels.normalise(channel))
 end)
+
+-- Bucket changes do not change membership, but both channel rosters must be rebuilt.
+---@param src integer
+---@return boolean ok
+---@return string|nil reason
+local function refreshVoiceTargets(src)
+    src = tonumber(src)
+    if not src then return false, 'qbvoice: src must be a number' end
+    if not Config.buckets.enforce then return true end
+
+    Voice.publish.roster('radio', Voice.store.getRadio(src))
+    Voice.publish.roster('call', Voice.store.getCall(src))
+    return true
+end
+
+AddEventHandler('qbvoice:server:bucketChanged', refreshVoiceTargets)
+exports('refreshVoiceTargets', refreshVoiceTargets)
