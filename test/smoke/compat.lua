@@ -3,6 +3,7 @@
 -- a parallel implementation.
 local h = dofile('test/harness.lua')
 local mocks = dofile('test/mocks.lua'); local net = mocks.install()
+QB.compat = dofile('../qblib/compat/provider.lua')()
 dofile('config.lua')
 dofile('shared/channels.lua')
 dofile('server/store.lua')
@@ -41,6 +42,7 @@ h.test('the pma-voice server surface is registered under its own identity', func
     -- `provide 'pma-voice'` in the manifest satisfies a dependency; it does NOT
     -- make exports resolve. These handlers are the separate mechanism that does.
     for _, name in ipairs({
+        'addChannelCheck', 'removeChannelCheck',
         'setPlayerRadio', 'addPlayerToRadio', 'removePlayerFromRadio',
         'setPlayerCall', 'removePlayerFromCall',
         'getPlayersInRadioChannel', 'getPlayersInCall',
@@ -52,6 +54,7 @@ end)
 
 h.test('qbvoice registers the same surface under its own name', function()
     for _, name in ipairs({
+        'addChannelCheck', 'removeChannelCheck',
         'setPlayerRadio', 'addPlayerToRadio', 'removePlayerFromRadio',
         'setPlayerCall', 'removePlayerFromCall',
         'getPlayersInRadioChannel', 'getPlayersInCall', 'getRadioMembers',
@@ -141,6 +144,41 @@ h.test('the compat surface is exposed for introspection but not as a second path
     Voice.compat.server.setPlayerRadio(OFFICER, 4)
 
     h.assertTrue(#net.pushesTo(OFFICER) > 0, 'the compat call published a roster')
+end)
+
+h.test('channel checks enforce stock qb-radio authorization before grants and hooks', function()
+    reset()
+    local called
+    h.assertEqual(pmaExport('addChannelCheck')(31, function(src) called = src; return src == OFFICER end), nil)
+    Voice.policy.grant(CIVILIAN, 31)
+    Voice.policy.addHook(function() return true end)
+    h.assertFalse(Voice.api.request(CIVILIAN, 31))
+    h.assertEqual(called, CIVILIAN)
+    h.assertEqual(Voice.store.getRadio(CIVILIAN), nil)
+    h.assertTrue(Voice.api.request(OFFICER, 31))
+    h.assertEqual(Voice.store.getRadio(OFFICER), 31)
+    h.assertTrue(Voice.api.request(CIVILIAN, 50), 'other channels still use native policy')
+end)
+
+h.test('check updates, failures, callable references and provider restart fail closed', function()
+    reset()
+    GetInvokingResource = function() return 'qb-radio' end
+    pmaExport('addChannelCheck')(31, setmetatable({ __cfx_functionReference = 'fixture' }, {
+        __call = function() return true end,
+    }))
+    h.assertTrue(Voice.api.request(OFFICER, 31))
+    pmaExport('addChannelCheck')(31, function() error('provider unavailable') end)
+    h.assertFalse(Voice.api.request(OFFICER, 31))
+    pmaExport('addChannelCheck')(31, function() return true end)
+    TriggerEvent('onResourceStop', 'qb-radio')
+    h.assertFalse(Voice.api.request(OFFICER, 31))
+    pmaExport('addChannelCheck')(31, function() return true end)
+    h.assertTrue(Voice.api.request(OFFICER, 31))
+    pmaExport('removeChannelCheck')(31)
+    h.assertTrue(Voice.api.request(CIVILIAN, 31))
+    h.assertFalse(pcall(pmaExport('addChannelCheck'), '31', function() return true end))
+    h.assertFalse(pcall(pmaExport('addChannelCheck'), 31, {}))
+    GetInvokingResource = function() return nil end
 end)
 
 h.report('compat')

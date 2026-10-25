@@ -46,7 +46,7 @@ end)
 h.test('the pma-voice client identity resolves to this resource', function()
     for _, name in ipairs({
         'setVoiceProperty', 'getVoiceProperty', 'setRadioVolume', 'setCallVolume',
-        'setTalkingMode', 'addPlayerToRadio', 'removePlayerFromRadio',
+        'setTalkingMode', 'setRadioChannel', 'addPlayerToRadio', 'removePlayerFromRadio',
         'removePlayerFromCall', 'getRadioChannel', 'getCallChannel',
     }) do
         h.assertTrue(pmaExport(name) ~= nil, ('exports[pma-voice]:%s is missing'):format(name))
@@ -226,6 +226,20 @@ h.test('the megaphone key changes the range and the submix routing', function()
 
     net.keybinds.qbvoice_megaphone.onReleased()
     h.assertFalse(Voice.state.data.megaphone, 'and released')
+end)
+
+h.test('legacy setRadioChannel uses the authorized request without asserting membership', function()
+    Voice.state.setRadio(false)
+    net.setCallbackResponse('qbvoice:requestRadio', true)
+    h.assertTrue(pmaExport('setRadioChannel')(5))
+    h.assertEqual(Voice.state.data.radio, false, 'membership awaits server replication')
+    net.setCallbackResponse('qbvoice:requestRadio', false, 'restricted')
+    local ok, reason = pmaExport('setRadioChannel')(2)
+    h.assertFalse(ok)
+    h.assertEqual(reason, 'restricted')
+    net.setCallbackResponse('qbvoice:requestRadio', true)
+    h.assertTrue(pmaExport('setRadioChannel')(0), 'zero requests leaving')
+    h.assertEqual(Voice.state.data.radio, false)
 end)
 
 h.report('exports')

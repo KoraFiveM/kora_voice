@@ -28,6 +28,9 @@ local surface = {
     -- Requests, not assertions -- the same as qbvoice's own client exports.
     -- pma-voice's client `addPlayerToRadio` also went through its server, so
     -- this is not a behaviour change for a caller, only a stronger guarantee.
+    setRadioChannel = function(channel)
+        return exports.qbvoice:addPlayerToRadio(channel)
+    end,
     addPlayerToRadio = function(channel)
         return exports.qbvoice:addPlayerToRadio(channel)
     end,

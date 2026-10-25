@@ -360,6 +360,9 @@ end)
 ---is running.
 ---@param fn fun(src: integer, channel: integer): boolean|nil, string|nil
 ---@return integer handle
+exports('addChannelCheck', Voice.policy.addChannelCheck)
+exports('removeChannelCheck', Voice.policy.removeChannelCheck)
+
 exports('addRadioPolicy', function(fn)
     return Voice.policy.addHook(fn)
 end)

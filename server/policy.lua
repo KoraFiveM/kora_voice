@@ -7,7 +7,8 @@
 -- between a player and a channel's audio is the voice target the server's
 -- published roster builds.
 --
--- Three ways a channel opens up, evaluated in this order:
+-- A channel-specific legacy check decides first when registered. Otherwise,
+-- three ways a channel opens up are evaluated in this order:
 --   1. a POLICY HOOK explicitly allows (a job resource's own rule)
 --   2. an explicit per-player GRANT (a radio item, an on-duty hook)
 --   3. the channel is not in Config.radio.restricted at all
@@ -22,6 +23,7 @@ local P = Voice.policy
 -- hook to return a definite answer wins -- so a job resource that starts later
 -- cannot silently override an earlier one's refusal by accident.
 local hooks = {}
+local channelChecks = {}
 
 -- src -> { [channel] = true }. Grants are DATA, not a funcref, which is the
 -- recommended integration: a funcref crossing the exports boundary is only
@@ -48,6 +50,26 @@ function P.addHook(fn)
     hooks[#hooks + 1] = { resource = GetInvokingResource and GetInvokingResource() or nil, fn = fn }
     return #hooks
 end
+
+-- A legacy channel check owns its frequency, before generic hooks or grants.
+function P.addChannelCheck(channel, fn)
+    assert(type(channel) == 'number' and Voice.channels.normalise(channel) == channel,
+        'qbvoice: channel must be a valid radio channel number')
+    assert(QB.compat.isCallable(fn), 'qbvoice: channel check must be callable')
+    channelChecks[channel] = { resource = GetInvokingResource(), fn = fn }
+end
+
+function P.removeChannelCheck(channel)
+    assert(type(channel) == 'number', 'qbvoice: channel must be a number')
+    channelChecks[channel] = nil
+end
+
+AddEventHandler('onResourceStop', function(resource)
+    for _, check in pairs(channelChecks) do
+        -- A stopped authorization provider must not silently open its frequency.
+        if check.resource == resource then check.fn = nil end
+    end
+end)
 
 ---Removes a hook by handle. Returns whether it was live.
 ---@param handle integer
@@ -126,6 +148,13 @@ end
 ---@return boolean allowed, string|nil reason
 ---@return boolean|nil characterOwned static job-rule approval
 function P.canJoin(src, channel)
+    local check = channelChecks[channel]
+    if check then
+        local ok, allowed = pcall(check.fn, src)
+        if not ok or allowed ~= true then return false, Config.radio.refusedMessage end
+        return true
+    end
+
     for _, entry in ipairs(hooks) do
         if entry then
             local ok, allowed, reason = pcall(entry.fn, src, channel)
@@ -169,5 +198,5 @@ end
 
 ---Wipes hooks and grants. Test-only.
 function P._reset()
-    hooks, grants = {}, {}
+    hooks, grants, channelChecks = {}, {}, {}
 end

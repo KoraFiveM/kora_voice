@@ -399,3 +399,16 @@ instead of using its `value` argument fails here.
 Compare the header count against the summary count in the output: a CFX backtick
 hash literal anywhere in a dofile'd file kills plain Lua *silently*, printing a
 header and no summary.
+
+## Legacy channel checks
+
+The server exports `addChannelCheck(channel, callback)` and
+`removeChannelCheck(channel)` are also available under `pma-voice`. A registered
+check owns authorization for that channel before generic hooks, grants and the
+configured restrictions. Callbacks receive the requesting player's server ID.
+A refusal, error or stopped callback provider denies new joins; restarting the
+provider must register its checks again.
+
+Legacy client `addPlayerToCall` remains unsupported: a client-selected call ID
+cannot authorize membership. Phone servers must assign both participants through
+the trusted `setPlayerCall` server export. Native qbphone uses that integration.

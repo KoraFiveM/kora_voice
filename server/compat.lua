@@ -76,6 +76,8 @@ end)
 -- Only the SERVER half of pma-voice's surface. The client half is registered
 -- from client/compat.lua, in the client realm, where those exports live.
 local surface = {
+    addChannelCheck = Voice.policy.addChannelCheck,
+    removeChannelCheck = Voice.policy.removeChannelCheck,
     setPlayerRadio = Voice.api.assign,
     addPlayerToRadio = Voice.api.assign,
     removePlayerFromRadio = Voice.api.removeFromRadio,
