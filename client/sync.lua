@@ -41,7 +41,7 @@ local function applyRadio(value)
 
     if not Voice.state.setRadio(channel) then return end
 
-    -- Both event names on purpose: the qbvoice one for new code, the pma-voice
+    -- Both event names on purpose: the kora_voice one for new code, the pma-voice
     -- one because a phone or radio UI written against pma-voice listens for it
     -- and would otherwise show a channel the player is no longer on.
     TriggerEvent('qbvoice:client:radioChanged', channel)
@@ -94,7 +94,7 @@ CreateThread(function()
     while not NetworkIsSessionStarted() do Wait(0) end
 
     -- The session flag can flip a tick before the server id is readable, and
-    -- QB.cache only re-reads its natives on qblib's shared tick -- so spinning
+    -- QB.cache only re-reads its natives on kora_lib's shared tick -- so spinning
     -- on the flag alone can still leave this at -1. Spin on the id itself.
     local serverId = GetPlayerServerId(PlayerId())
     while not serverId or serverId <= 0 do
@@ -127,7 +127,7 @@ CreateThread(function()
     end)
 
     -- Catch-up, AFTER the handlers are armed. This is what makes
-    -- `ensure qbvoice` against a live, already-logged-in server work: every
+    -- `ensure kora_voice` against a live, already-logged-in server work: every
     -- change that happened before the subscriptions existed is re-stated here.
     -- Ordering matters -- asking first and arming second would race the answer.
     local published = QB.callback.trigger('qbvoice:sync')

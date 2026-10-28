@@ -87,7 +87,7 @@ end)
 ---
 ---This is what a mic indicator should use to distinguish radio traffic from
 ---proximity speech. Plain "am I talking" is a different question and the
----native `NetworkIsPlayerTalking` already answers it -- which is why qbhud's
+---native `NetworkIsPlayerTalking` already answers it -- which is why kora_hud's
 ---mic indicator needs no integration with this resource at all.
 ---@return boolean
 exports('isRadioActive', function()

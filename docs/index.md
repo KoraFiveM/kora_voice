@@ -1,6 +1,6 @@
-# qbvoice
+# kora_voice
 
-First-party voice for the qblib framework, and a drop-in replacement for
+First-party voice for the kora_lib framework, and a drop-in replacement for
 pma-voice: whisper/normal/shout proximity, numbered radio channels, phone calls
 that run alongside the radio, radio and megaphone submixes, and muffling through
 walls.
@@ -95,7 +95,7 @@ Three ways a channel opens up, evaluated in this order:
 time.
 
 ```lua
-local handle = exports.qbvoice:addRadioPolicy(function(src, channel)
+local handle = exports.kora_voice:addRadioPolicy(function(src, channel)
     if channel ~= 2 then return nil end                 -- abstain: not ours
     if not isFirefighter(src) then return false, 'Fire only.' end
     return true                                          -- allow, overriding config
@@ -112,8 +112,8 @@ funcref is only callable while the resource that created it is running, so a job
 resource restarting leaves a dead hook behind; a grant survives.
 
 ```lua
-exports.qbvoice:grantRadioChannels(src, { 1, 2, 3 })
-exports.qbvoice:revokeRadioChannels(src)
+exports.kora_voice:grantRadioChannels(src, { 1, 2, 3 })
+exports.kora_voice:revokeRadioChannels(src)
 ```
 
 Grants are dropped on disconnect — source ids are reused, and a leftover grant
@@ -127,7 +127,7 @@ Config.radio.restricted = {
 }
 ```
 
-`jobs` matches a qbcore job **name**, `jobTypes` a qbcore job **type** (so `leo`
+`jobs` matches a kora_core job **name**, `jobTypes` a kora_core job **type** (so `leo`
 covers police, sheriff and state troopers at once). A channel absent from the
 table is **open**; an entry with neither `jobs` nor `jobTypes` is **locked**, so a
 config typo fails closed.
@@ -219,24 +219,24 @@ second of silence after joining a channel reads as the radio being broken.
 ## Server exports
 
 ```lua
-exports.qbvoice:setPlayerRadio(src, channel)        --> ok, err   -- trusted, no policy check
-exports.qbvoice:addPlayerToRadio(src, channel)      --> ok, err   -- alias
-exports.qbvoice:removePlayerFromRadio(src, channel) --> removed   -- channel is a GUARD, not a target
-exports.qbvoice:setPlayerCall(src, channel)         --> ok, err
-exports.qbvoice:removePlayerFromCall(src, channel)  --> removed
-exports.qbvoice:refreshVoiceTargets(src)             --> ok, err   -- republish current bucket-filtered rosters
+exports.kora_voice:setPlayerRadio(src, channel)        --> ok, err   -- trusted, no policy check
+exports.kora_voice:addPlayerToRadio(src, channel)      --> ok, err   -- alias
+exports.kora_voice:removePlayerFromRadio(src, channel) --> removed   -- channel is a GUARD, not a target
+exports.kora_voice:setPlayerCall(src, channel)         --> ok, err
+exports.kora_voice:removePlayerFromCall(src, channel)  --> removed
+exports.kora_voice:refreshVoiceTargets(src)             --> ok, err   -- republish current bucket-filtered rosters
 
-exports.qbvoice:getPlayersInRadioChannel(channel)   --> { [src] = true }   -- pma-voice shape
-exports.qbvoice:getPlayersInCall(channel)           --> { [src] = true }
-exports.qbvoice:getRadioMembers(channel)            --> integer[]          -- sorted array form
-exports.qbvoice:getRadioChannel(src)                --> integer | false
-exports.qbvoice:getCallChannel(src)                 --> integer | false
+exports.kora_voice:getPlayersInRadioChannel(channel)   --> { [src] = true }   -- pma-voice shape
+exports.kora_voice:getPlayersInCall(channel)           --> { [src] = true }
+exports.kora_voice:getRadioMembers(channel)            --> integer[]          -- sorted array form
+exports.kora_voice:getRadioChannel(src)                --> integer | false
+exports.kora_voice:getCallChannel(src)                 --> integer | false
 
-exports.qbvoice:grantRadioChannels(src, channels)   --> count
-exports.qbvoice:revokeRadioChannels(src)            --> 0
-exports.qbvoice:addRadioPolicy(fn)                  --> handle
-exports.qbvoice:removeRadioPolicy(handle)           --> boolean
-exports.qbvoice:isChannelRestricted(channel)        --> boolean
+exports.kora_voice:grantRadioChannels(src, channels)   --> count
+exports.kora_voice:revokeRadioChannels(src)            --> 0
+exports.kora_voice:addRadioPolicy(fn)                  --> handle
+exports.kora_voice:removeRadioPolicy(handle)           --> boolean
+exports.kora_voice:isChannelRestricted(channel)        --> boolean
 ```
 
 The server `refreshVoiceTargets(src)` republishes that player's current radio and
@@ -260,23 +260,23 @@ survive the exports boundary as a distinguishable value.
 ## Client exports
 
 ```lua
-exports.qbvoice:addPlayerToRadio(channel)      --> ok, reason   -- a REQUEST; must run in a coroutine
-exports.qbvoice:removePlayerFromRadio()        --> boolean
-exports.qbvoice:removePlayerFromCall()         --> boolean
-exports.qbvoice:getRadioChannel()              --> integer | false   -- what the SERVER published
-exports.qbvoice:getCallChannel()               --> integer | false
+exports.kora_voice:addPlayerToRadio(channel)      --> ok, reason   -- a REQUEST; must run in a coroutine
+exports.kora_voice:removePlayerFromRadio()        --> boolean
+exports.kora_voice:removePlayerFromCall()         --> boolean
+exports.kora_voice:getRadioChannel()              --> integer | false   -- what the SERVER published
+exports.kora_voice:getCallChannel()               --> integer | false
 
-exports.qbvoice:setTalkingMode(mode)           --> index, range      -- index or name ('whisper')
-exports.qbvoice:cycleTalkingMode(step)         --> index, range
-exports.qbvoice:getTalkingMode()               --> { index, name, label, range }
-exports.qbvoice:isRadioActive()                --> boolean
-exports.qbvoice:setMegaphone(active)           --> changed
+exports.kora_voice:setTalkingMode(mode)           --> index, range      -- index or name ('whisper')
+exports.kora_voice:cycleTalkingMode(step)         --> index, range
+exports.kora_voice:getTalkingMode()               --> { index, name, label, range }
+exports.kora_voice:isRadioActive()                --> boolean
+exports.kora_voice:setMegaphone(active)           --> changed
 
-exports.qbvoice:setRadioVolume(volume)         --> applied           -- 0.0-1.0 or 0-100
-exports.qbvoice:setCallVolume(volume)          --> applied
-exports.qbvoice:setVoiceProperty(name, value)  --> ok
-exports.qbvoice:getVoiceProperty(name)         --> any
-exports.qbvoice:refreshVoiceTargets()          --> boolean
+exports.kora_voice:setRadioVolume(volume)         --> applied           -- 0.0-1.0 or 0-100
+exports.kora_voice:setCallVolume(volume)          --> applied
+exports.kora_voice:setVoiceProperty(name, value)  --> ok
+exports.kora_voice:getVoiceProperty(name)         --> any
+exports.kora_voice:refreshVoiceTargets()          --> boolean
 ```
 
 `addPlayerToRadio` returns whether the **server agreed** — not that the local
@@ -348,7 +348,7 @@ its own membership from the roster push.
 
 ## Replacing pma-voice
 
-Stop `pma-voice`, `ensure qbvoice`. qbvoice refuses to start while a real
+Stop `pma-voice`, `ensure kora_voice`. kora_voice refuses to start while a real
 pma-voice folder is running (`Config.compat.refuseOnConflict`) — two resources
 rebuilding the same Mumble voice target fight every tick, and the symptom is
 intermittent one-directional audio that reads as a network fault.
@@ -371,13 +371,13 @@ channel by firing a well-known event name. Here every net event's target is
 `source`, and a payload `src` is ignored. Server code that legitimately needs to
 assign another player's channel calls the export, which is trusted.
 
-### qbhud
+### kora_hud
 
-No integration needed, and none was added. qbhud's mic indicator reads FiveM's
+No integration needed, and none was added. kora_hud's mic indicator reads FiveM's
 own `NetworkIsPlayerTalking`, which reflects whichever Mumble-backed voice
 resource is on top of it. Its `Config.voice.resource = "pma-voice"` is a label,
 not a lookup. A HUD that wants to distinguish radio traffic from proximity
-speech can call `exports.qbvoice:isRadioActive()`.
+speech can call `exports.kora_voice:isRadioActive()`.
 
 ---
 
@@ -411,4 +411,4 @@ provider must register its checks again.
 
 Legacy client `addPlayerToCall` remains unsupported: a client-selected call ID
 cannot authorize membership. Phone servers must assign both participants through
-the trusted `setPlayerCall` server export. Native qbphone uses that integration.
+the trusted `setPlayerCall` server export. Native kora_phone uses that integration.

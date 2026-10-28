@@ -40,7 +40,7 @@ end, { rateLimit = Config.rateLimit.call })
 ---Re-publishes everything one player needs.
 ---
 ---Needed because a client's state can be newer than its subscriptions: on
----`ensure qbvoice` against a live server, and on a fresh spawn, the client
+---`ensure kora_voice` against a live server, and on a fresh spawn, the client
 ---arms its state-bag handlers after the session starts and has missed every
 ---change that happened before that. It asks; the server re-states.
 QB.callback.register('qbvoice:sync', function(src)

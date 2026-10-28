@@ -173,7 +173,7 @@ h.test('a resync re-states everything one player needs', function()
     Voice.api.assignCall(A, 5551234)
     net.clear()
 
-    -- This is what makes `ensure qbvoice` against a live server work: the
+    -- This is what makes `ensure kora_voice` against a live server work: the
     -- client arms its subscriptions after the session starts and has missed
     -- every change before that.
     local published = net.invokeCallback('qbvoice:sync', A)

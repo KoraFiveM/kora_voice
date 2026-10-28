@@ -124,16 +124,16 @@ function P.forget(src)
     grants[src] = nil
 end
 
----Reads a player's job through qbcore, or nil when qbcore is unavailable.
+---Reads a player's job through kora_core, or nil when kora_core is unavailable.
 ---
 ---pcall'd because the restriction check must not be the thing that takes the
----radio down when qbcore is restarting. A failed read yields nil, which
+---radio down when kora_core is restarting. A failed read yields nil, which
 ---`Voice.channels.jobSatisfies` treats as "satisfies nothing" -- so the failure
 ---mode is a REFUSED restricted channel, never an allowed one.
 ---@param src integer
 ---@return { name: string|nil, type: string|nil, onduty: boolean|nil }|nil
 local function jobOf(src)
-    local ok, job = pcall(function() return exports.qbcore:getJob(src) end)
+    local ok, job = pcall(function() return exports.kora_core:getJob(src) end)
     if not ok or type(job) ~= 'table' then return nil end
     return job
 end

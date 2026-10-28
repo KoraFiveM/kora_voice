@@ -2,16 +2,18 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-name 'qbvoice'
+name 'kora_voice'
+-- Keep the legacy resource name resolvable for exports['qbvoice'] callers.
+provide 'qbvoice'
 author 'qbcore2'
 version '0.1.0'
 description 'First-party voice: proximity modes, server-authoritative radio channels, phone calls, submixes and wall muffling'
 
--- qblib supplies keybinds, state-bag subscriptions, notifications, timers and
--- frontend sound. qbcore supplies the job/duty read the radio restriction table
+-- kora_lib supplies keybinds, state-bag subscriptions, notifications, timers and
+-- frontend sound. kora_core supplies the job/duty read the radio restriction table
 -- is evaluated against -- and only on the SERVER, in server/policy.lua.
-dependency 'qblib'
-dependency 'qbcore'
+dependency 'kora_lib'
+dependency 'kora_core'
 
 -- Satisfies a third-party resource's `dependency 'pma-voice'`. It does NOT by
 -- itself make `exports['pma-voice']:...` resolve here -- that is a separate
@@ -21,7 +23,7 @@ dependency 'qbcore'
 -- that name in resources/[compat]/. See resources/[compat]/README.md.
 provide 'pma-voice'
 
-shared_script '@qblib/init.lua'
+shared_script '@kora_lib/init.lua'
 
 shared_scripts {
     'config.lua',
@@ -69,6 +71,6 @@ client_scripts {
 }
 
 -- No ui_page and no files{}: this resource has no NUI of its own. The mic
--- indicator already belongs to qbhud, which reads the native talking state and
+-- indicator already belongs to kora_hud, which reads the native talking state and
 -- therefore needs no integration here -- adding a second indicator would put
 -- two of them on screen.

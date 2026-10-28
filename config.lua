@@ -53,7 +53,7 @@ Config.radio = {
     -- it and never evaluates it, because a client that decides its own
     -- eligibility is a client that can listen to the police tac channel.
     --
-    -- `jobs` matches a qbcore job NAME, `jobTypes` a qbcore job TYPE (so 'leo'
+    -- `jobs` matches a kora_core job NAME, `jobTypes` a kora_core job TYPE (so 'leo'
     -- covers police, sheriff and state troopers at once). `onDuty` requires the
     -- player be clocked on, which is what stops an off-duty officer sitting on
     -- the tac channel while playing a civilian.
@@ -270,7 +270,7 @@ Config.rateLimit = {
     sync  = { max = 5,  window = 10000 }, -- resource-restart resync
 }
 
--- Registers this resource-owned configuration with qblib without changing its public Config table.
+-- Registers this resource-owned configuration with kora_lib without changing its public Config table.
 if QB and QB.config and QB.config.adopt then
     Config.radio.restricted = QB.config.map(Config.radio.restricted, nil, {
         keyType = 'integer',

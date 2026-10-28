@@ -3,7 +3,7 @@
 -- a parallel implementation.
 local h = dofile('test/harness.lua')
 local mocks = dofile('test/mocks.lua'); local net = mocks.install()
-QB.compat = dofile('../qblib/compat/provider.lua')()
+QB.compat = dofile('../kora_lib/compat/provider.lua')()
 dofile('config.lua')
 dofile('shared/channels.lua')
 dofile('server/store.lua')
@@ -63,7 +63,7 @@ h.test('qbvoice registers the same surface under its own name', function()
         'addRadioPolicy', 'removeRadioPolicy', 'isChannelRestricted',
     }) do
         h.assertTrue(type(net.registeredExports[name]) == 'function',
-            ('exports.qbvoice:%s is missing'):format(name))
+            ('exports.kora_voice:%s is missing'):format(name))
     end
 end)
 

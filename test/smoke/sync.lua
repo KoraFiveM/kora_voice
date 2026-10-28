@@ -40,7 +40,7 @@ h.test('the bag handlers are bound to a real player bag, not to player:-1', func
 end)
 
 h.test('the catch-up resync runs at load, after the handlers are armed', function()
-    -- This is what makes `ensure qbvoice` against a live, already-logged-in
+    -- This is what makes `ensure kora_voice` against a live, already-logged-in
     -- server work. Asking first and arming second would race the answer.
     h.assertEqual(Voice.state.data.radio, 5, 'the published channel was applied')
 end)
@@ -51,7 +51,7 @@ h.test('a published channel is applied from the handlers value argument', functi
     -- The mock never commits to a store, so a handler that re-read the bag
     -- instead of using `value` would apply nil and this would be false.
     h.assertEqual(Voice.state.data.radio, 7, 'the value argument was used')
-    h.assertEqual(exports.qbvoice:getRadioChannel(), 7, 'and is what the export reports')
+    h.assertEqual(exports.kora_voice:getRadioChannel(), 7, 'and is what the export reports')
 end)
 
 h.test('an explicit false clears the channel', function()

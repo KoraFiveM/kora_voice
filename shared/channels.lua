@@ -62,7 +62,7 @@ end
 
 ---Whether a job/duty pair satisfies a restriction record.
 ---
----Pure, so the policy layer can be tested without a qbcore. An EMPTY
+---Pure, so the policy layer can be tested without a kora_core. An EMPTY
 ---restriction record (`{}` -- no jobs, no jobTypes) satisfies nobody: a server
 ---that lists a channel as restricted and then forgets to say who may use it
 ---means "locked", not "open to all". The opposite default would silently

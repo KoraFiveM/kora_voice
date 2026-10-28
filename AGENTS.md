@@ -1,4 +1,4 @@
-# qbvoice agent guide
+# kora_voice agent guide
 
 Proximity voice, server-authoritative radio channels, phone calls, submixes and
 wall muffling. See `docs/index.md` for the module reference. This file is about
@@ -38,10 +38,10 @@ Every rule below follows from that one sentence.
    with exactly what the server pushed. A merge, an append, or a locally-derived
    member is a self-granted voice target.
 
-5. **Every client-facing route shares the API limiter.** Both qblib callbacks
+5. **Every client-facing route shares the API limiter.** Both kora_lib callbacks
    and pma-voice compatibility events must enter through
    `Voice.api.requestClient`/the matching client-removal helper. Callbacks keep
-   their qblib `rateLimit` as defence in depth. `test/smoke/authority.lua`
+   their kora_lib `rateLimit` as defence in depth. `test/smoke/authority.lua`
    exercises both transports.
 
 6. **There is no client-reachable way to JOIN a call.** Leaving is fine (it
@@ -142,7 +142,7 @@ nobody.
 
 ## Do not
 
-- Add a NUI. The mic indicator belongs to qbhud, which reads
+- Add a NUI. The mic indicator belongs to kora_hud, which reads
   `NetworkIsPlayerTalking` and needs nothing from here. A second indicator puts
   two on screen.
 - Add a `Config.radio.restricted` read anywhere in `client/` or `shared/` that

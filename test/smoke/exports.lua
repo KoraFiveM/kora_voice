@@ -1,4 +1,4 @@
--- The client surface: qbvoice's own exports, the pma-voice client identity, and
+-- The client surface: kora_voice's own exports, the pma-voice client identity, and
 -- the keys.
 --
 -- The property under test throughout is that NOTHING here asserts membership.
@@ -39,7 +39,7 @@ h.test('the qbvoice client surface is registered', function()
         'setVoiceProperty', 'getVoiceProperty', 'refreshVoiceTargets',
     }) do
         h.assertTrue(type(net.registeredExports[name]) == 'function',
-            ('exports.qbvoice:%s is missing'):format(name))
+            ('exports.kora_voice:%s is missing'):format(name))
     end
 end)
 
@@ -57,39 +57,39 @@ h.test('addPlayerToRadio asks, and never asserts', function()
     Voice.state.setRadio(false)
     net.setCallbackResponse('qbvoice:requestRadio', true)
 
-    local ok = exports.qbvoice:addPlayerToRadio(3)
+    local ok = exports.kora_voice:addPlayerToRadio(3)
     h.assertTrue(ok, 'the server agreed')
 
     -- THE point. A `true` return means "the server agreed", not "I am on
     -- channel 3 now": membership arrives as a published state bag value, which
     -- client/sync.lua applies. A client that wrote it locally would be
     -- self-granting a channel.
-    h.assertEqual(exports.qbvoice:getRadioChannel(), false,
+    h.assertEqual(exports.kora_voice:getRadioChannel(), false,
         'local membership is still whatever the server last published')
 end)
 
 h.test('a refusal is reported with the servers reason', function()
     net.setCallbackResponse('qbvoice:requestRadio', false, 'That frequency is restricted.')
 
-    local ok, reason = exports.qbvoice:addPlayerToRadio(2)
+    local ok, reason = exports.kora_voice:addPlayerToRadio(2)
     h.assertFalse(ok, 'refused')
     h.assertEqual(reason, 'That frequency is restricted.', 'with the servers own wording')
 end)
 
 h.test('a timed-out round trip is distinguishable from a refusal', function()
-    -- qblib returns NO values on a timeout, so `ok` is nil rather than false.
+    -- kora_lib returns NO values on a timeout, so `ok` is nil rather than false.
     -- Inventing a reason for a dropped round trip would tell the player
     -- something the server never said.
     net.setCallbackResponse('qbvoice:requestRadio')
 
-    local ok, reason = exports.qbvoice:addPlayerToRadio(3)
+    local ok, reason = exports.kora_voice:addPlayerToRadio(3)
     h.assertFalse(ok, 'not treated as success')
     h.assertEqual(reason, nil, 'and carries no invented reason')
 end)
 
 h.test('setTalkingMode reaches the real voice-distance natives', function()
     net.clear()
-    local index, range = exports.qbvoice:setTalkingMode('shout')
+    local index, range = exports.kora_voice:setTalkingMode('shout')
 
     h.assertEqual(index, Voice.modes.indexOfName('shout'), 'resolved by name')
     h.assertEqual(net.nativesNamed('MumbleSetTalkerProximity')[1].args[1], range, 'and applied')
@@ -104,15 +104,15 @@ h.test('the pma-voice setTalkingMode maps onto the same path', function()
 end)
 
 h.test('an out-of-range talking mode is clamped, not passed to a native', function()
-    exports.qbvoice:setTalkingMode(99)
+    exports.kora_voice:setTalkingMode(99)
 
     -- A pma-voice call site historically passed a raw integer from a UI.
     h.assertTrue(Voice.state.mode() <= Voice.modes.count(), 'clamped into the configured set')
 end)
 
 h.test('getTalkingMode describes the mode for a HUD', function()
-    exports.qbvoice:setTalkingMode('whisper')
-    local mode = exports.qbvoice:getTalkingMode()
+    exports.kora_voice:setTalkingMode('whisper')
+    local mode = exports.kora_voice:getTalkingMode()
 
     h.assertEqual(mode.name, 'whisper', 'the stable name')
     h.assertTrue(type(mode.label) == 'string', 'a display label')
@@ -120,16 +120,16 @@ h.test('getTalkingMode describes the mode for a HUD', function()
 end)
 
 h.test('volumes accept both 0-1 and 0-100', function()
-    h.assertEqual(exports.qbvoice:setRadioVolume(0.5), 0.5, 'a fraction is taken as-is')
+    h.assertEqual(exports.kora_voice:setRadioVolume(0.5), 0.5, 'a fraction is taken as-is')
     -- Clamping 50 to 1.0 would turn "setRadioVolume(50)" into full volume --
     -- the opposite of the intent.
-    h.assertEqual(exports.qbvoice:setRadioVolume(50), 0.5, 'a percentage is converted')
-    h.assertEqual(exports.qbvoice:setRadioVolume(-3), 0.0, 'and negatives floor at silence')
+    h.assertEqual(exports.kora_voice:setRadioVolume(50), 0.5, 'a percentage is converted')
+    h.assertEqual(exports.kora_voice:setRadioVolume(-3), 0.0, 'and negatives floor at silence')
 end)
 
 h.test('setVoiceProperty covers the pma-voice property names', function()
     for _, property in ipairs({ 'radioVolume', 'callVolume', 'micClicks', 'submix', 'talkingMode', 'muffling' }) do
-        h.assertTrue(exports.qbvoice:setVoiceProperty(property, 1),
+        h.assertTrue(exports.kora_voice:setVoiceProperty(property, 1),
             ('%s should be settable'):format(property))
     end
 end)
@@ -137,16 +137,16 @@ end)
 h.test('an unknown voice property is refused rather than silently dropped', function()
     -- A silently dropped setVoiceProperty presents as "the volume slider does
     -- nothing", which is a call-site typo nobody can find.
-    h.assertFalse(exports.qbvoice:setVoiceProperty('reverb', 1), 'refused')
+    h.assertFalse(exports.kora_voice:setVoiceProperty('reverb', 1), 'refused')
 end)
 
 h.test('getVoiceProperty reads back what setVoiceProperty wrote', function()
-    exports.qbvoice:setVoiceProperty('radioVolume', 0.25)
-    h.assertEqual(exports.qbvoice:getVoiceProperty('radioVolume'), 0.25, 'volume round-trips')
+    exports.kora_voice:setVoiceProperty('radioVolume', 0.25)
+    h.assertEqual(exports.kora_voice:getVoiceProperty('radioVolume'), 0.25, 'volume round-trips')
 
-    exports.qbvoice:setVoiceProperty('micClicks', false)
-    h.assertFalse(exports.qbvoice:getVoiceProperty('micClicks'), 'a toggle round-trips')
-    exports.qbvoice:setVoiceProperty('micClicks', true)
+    exports.kora_voice:setVoiceProperty('micClicks', false)
+    h.assertFalse(exports.kora_voice:getVoiceProperty('micClicks'), 'a toggle round-trips')
+    exports.kora_voice:setVoiceProperty('micClicks', true)
 end)
 
 h.test('no voice property can change membership', function()
@@ -155,16 +155,16 @@ h.test('no voice property can change membership', function()
     Voice.state.setRadio(false)
 
     for _, property in ipairs({ 'radioChannel', 'callChannel', 'channel', 'radio' }) do
-        h.assertFalse(exports.qbvoice:setVoiceProperty(property, 2),
+        h.assertFalse(exports.kora_voice:setVoiceProperty(property, 2),
             ('%s must not be settable'):format(property))
     end
 
-    h.assertEqual(exports.qbvoice:getRadioChannel(), false, 'still on no channel')
+    h.assertEqual(exports.kora_voice:getRadioChannel(), false, 'still on no channel')
 end)
 
 h.test('getVoiceProperty can still READ the channel', function()
     Voice.state.setRadio(6)
-    h.assertEqual(exports.qbvoice:getVoiceProperty('radioChannel'), 6, 'reading is fine; writing is not')
+    h.assertEqual(exports.kora_voice:getVoiceProperty('radioChannel'), 6, 'reading is fine; writing is not')
 end)
 
 h.test('the three keys are registered and rebindable', function()

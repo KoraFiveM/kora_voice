@@ -64,7 +64,7 @@ h.test('onDuty is enforced when the record asks for it', function()
 end)
 
 h.test('an unreadable job satisfies nothing', function()
-    -- qbcore restarting makes the job read fail. The failure mode has to be a
+    -- kora_core restarting makes the job read fail. The failure mode has to be a
     -- REFUSED restricted channel, never an allowed one.
     h.assertFalse(Voice.channels.jobSatisfies({ jobTypes = { 'leo' } }, nil), 'nil job')
     h.assertFalse(Voice.channels.jobSatisfies({ jobTypes = { 'leo' } }, 'not a table'), 'garbage job')

@@ -1,5 +1,5 @@
--- Mocks for smoke-testing qbvoice under plain lua5.4 (no FiveM, no Mumble, no
--- qbcore).
+-- Mocks for smoke-testing kora_voice under plain lua5.4 (no FiveM, no Mumble, no
+-- kora_core).
 --
 -- Two things are deliberately RECORDED rather than simulated, because they are
 -- what the tests are actually about:
@@ -69,7 +69,7 @@ function M.install()
     function _G.Wait(_) end
     function _G.SetTimeout(_, fn) fn() end
     function _G.GetInvokingResource() return nil end
-    function _G.GetCurrentResourceName() return 'qbvoice' end
+    function _G.GetCurrentResourceName() return 'kora_voice' end
     function _G.GetHashKey(value) return #tostring(value) end
     function _G.joaat(value) return #tostring(value) end
     function _G.GetGameTimer() return math.floor(os.clock() * 1000) end
@@ -153,9 +153,9 @@ function M.install()
     function _G.SetAudioSubmixEffectParamFloat(...) record('SetAudioSubmixEffectParamFloat', ...) end
     function _G.AddAudioSubmixOutput(...) record('AddAudioSubmixOutput', ...) end
 
-    -- --- qbcore ---
+    -- --- kora_core ---
     --
-    -- Job records mirror qbcore/shared/jobs.lua's real relationships, because
+    -- Job records mirror kora_core/shared/jobs.lua's real relationships, because
     -- the restriction table is evaluated against real job->type pairs and a
     -- mock with a different shape would test nothing.
     local players = {}
@@ -184,17 +184,17 @@ function M.install()
         return function(_self, ...)
             local fn = registered[name]
             if not fn then
-                error(('mocks: exports.qbvoice:%s was called but never registered'):format(tostring(name)), 2)
+                error(('mocks: exports.kora_voice:%s was called but never registered'):format(tostring(name)), 2)
             end
             return fn(...)
         end
     end
 
     _G.exports = setmetatable(
-        { qbcore = qbcore, qbvoice = setmetatable({}, { __index = proxy }) },
+        { kora_core = qbcore, kora_voice = setmetatable({}, { __index = proxy }) },
         { __call = function(_, name, fn) registered[name] = fn end })
 
-    -- --- qblib ---
+    -- --- kora_lib ---
     local callbackResponses = {}
 
     _G.QB = {
@@ -319,7 +319,7 @@ function M.install()
             callbackResponses[name] = table.pack(...)
         end,
 
-        ---Invokes a server callback the way qblib would, with an explicit src.
+        ---Invokes a server callback the way kora_lib would, with an explicit src.
         invokeCallback = function(name, src, ...)
             local entry = serverCallbacks[name]
             if not entry then error(('mocks: no server callback named %s'):format(name), 2) end

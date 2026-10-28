@@ -71,7 +71,7 @@ QB.keybind.add({
     name = 'qbvoice_megaphone',
     description = 'Voice: megaphone',
     -- Unbound by default: a megaphone belongs to a vehicle or a prop, and a
-    -- resource that owns one calls exports.qbvoice:setMegaphone instead. The
+    -- resource that owns one calls exports.kora_voice:setMegaphone instead. The
     -- bind exists so a server that wants a bare key can set one in config
     -- without editing code.
     defaultKey = Config.keybinds.megaphone,

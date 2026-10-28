@@ -150,7 +150,7 @@ function A.request(src, channel)
     return true
 end
 
----Rate-limited client request shared by qblib callbacks and pma-voice events.
+---Rate-limited client request shared by kora_lib callbacks and pma-voice events.
 ---@param src integer
 ---@param channel integer|nil
 ---@return boolean ok, string|nil reason
@@ -258,7 +258,7 @@ end)
 -- All server-side, all trusted. There is no client export that changes
 -- membership anywhere in this resource -- see client/exports.lua.
 
----Puts a player on a radio channel. `exports.qbvoice:setPlayerRadio(src, 3)`
+---Puts a player on a radio channel. `exports.kora_voice:setPlayerRadio(src, 3)`
 ---@param src integer
 ---@param channel integer|nil
 ---@return boolean ok, string|nil error

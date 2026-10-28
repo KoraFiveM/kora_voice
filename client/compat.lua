@@ -16,29 +16,29 @@ if not Config.compat.pmaVoice then return end
 
 local surface = {
     setVoiceProperty = function(property, value)
-        return exports.qbvoice:setVoiceProperty(property, value)
+        return exports.kora_voice:setVoiceProperty(property, value)
     end,
     getVoiceProperty = function(property)
-        return exports.qbvoice:getVoiceProperty(property)
+        return exports.kora_voice:getVoiceProperty(property)
     end,
     setRadioVolume = function(volume) return Voice.state.setVolume('radio', volume) end,
     setCallVolume = function(volume) return Voice.state.setVolume('call', volume) end,
     setTalkingMode = Voice.proximity.set,
 
-    -- Requests, not assertions -- the same as qbvoice's own client exports.
+    -- Requests, not assertions -- the same as kora_voice's own client exports.
     -- pma-voice's client `addPlayerToRadio` also went through its server, so
     -- this is not a behaviour change for a caller, only a stronger guarantee.
     setRadioChannel = function(channel)
-        return exports.qbvoice:addPlayerToRadio(channel)
+        return exports.kora_voice:addPlayerToRadio(channel)
     end,
     addPlayerToRadio = function(channel)
-        return exports.qbvoice:addPlayerToRadio(channel)
+        return exports.kora_voice:addPlayerToRadio(channel)
     end,
     removePlayerFromRadio = function()
-        return exports.qbvoice:removePlayerFromRadio()
+        return exports.kora_voice:removePlayerFromRadio()
     end,
     removePlayerFromCall = function()
-        return exports.qbvoice:removePlayerFromCall()
+        return exports.kora_voice:removePlayerFromCall()
     end,
 
     getRadioChannel = function() return Voice.state.data.radio end,
@@ -62,7 +62,7 @@ RegisterNetEvent('pma-voice:setTalkingMode', function(mode)
 end)
 
 RegisterNetEvent('pma-voice:setVoiceProperty', function(property, value)
-    exports.qbvoice:setVoiceProperty(property, value)
+    exports.kora_voice:setVoiceProperty(property, value)
 end)
 
 -- Deliberately NOT registered: `pma-voice:setRadioChannel` and
