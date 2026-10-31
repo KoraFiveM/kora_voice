@@ -110,7 +110,7 @@ compare `run.sh`'s header count against its summary count.
 
 **Never per-frame.** The voice-target rebuild walks every in-scope player and
 fires a synchronous shape test per nearby one. It belongs on
-`Config.mumble.refreshInterval` via `QB.timers.setInterval`, with an immediate
+`Config.mumble.refreshInterval` via `Kora.timers.setInterval`, with an immediate
 rebuild on membership change. `test/smoke/targets.lua` asserts exactly one timer
 at the configured interval.
 

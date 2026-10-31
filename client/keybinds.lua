@@ -1,4 +1,4 @@
--- The three keys. Every one goes through QB.keybind.add, so all of them appear
+-- The three keys. Every one goes through Kora.keybind.add, so all of them appear
 -- in FiveM's own key-binding settings and every player can rebind them.
 --
 -- Note what NONE of these do: none of them change membership. The radio key
@@ -9,7 +9,7 @@
 
 Voice = Voice or {}
 
-QB.keybind.add({
+Kora.keybind.add({
     name = 'qbvoice_proximity',
     description = 'Voice: cycle talk range (whisper/normal/shout)',
     defaultKey = Config.keybinds.cycleProximity,
@@ -22,10 +22,10 @@ QB.keybind.add({
 ---@param spec { name: string, set: string }
 local function click(spec)
     if not Config.radio.clicks or not spec then return end
-    QB.sound.playFrontend(spec.name, spec.set)
+    Kora.sound.playFrontend(spec.name, spec.set)
 end
 
-QB.keybind.add({
+Kora.keybind.add({
     name = 'qbvoice_radio',
     description = 'Voice: talk on the radio (push to talk)',
     defaultKey = Config.keybinds.radioTalk,
@@ -67,7 +67,7 @@ QB.keybind.add({
     end,
 })
 
-QB.keybind.add({
+Kora.keybind.add({
     name = 'qbvoice_megaphone',
     description = 'Voice: megaphone',
     -- Unbound by default: a megaphone belongs to a vehicle or a prop, and a

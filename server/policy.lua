@@ -55,7 +55,7 @@ end
 function P.addChannelCheck(channel, fn)
     assert(type(channel) == 'number' and Voice.channels.normalise(channel) == channel,
         'qbvoice: channel must be a valid radio channel number')
-    assert(QB.compat.isCallable(fn), 'qbvoice: channel check must be callable')
+    assert(Kora.compat.isCallable(fn), 'qbvoice: channel check must be callable')
     channelChecks[channel] = { resource = GetInvokingResource(), fn = fn }
 end
 

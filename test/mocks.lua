@@ -197,7 +197,7 @@ function M.install()
     -- --- kora_lib ---
     local callbackResponses = {}
 
-    _G.QB = {
+    _G.Kora = {
         compat = { provideExport = function(identity, name, fn)
             AddEventHandler(('__cfx_export_%s_%s'):format(identity, name), function(setCallback)
                 setCallback(fn)
@@ -313,7 +313,7 @@ function M.install()
         ---Whether shape tests report a wall.
         setOccluded = function(value) occluded = value and true or false end,
 
-        ---Scripts what QB.callback.trigger returns for one name on the client.
+        ---Scripts what Kora.callback.trigger returns for one name on the client.
         ---Pass nothing to simulate a timed-out round trip.
         setCallbackResponse = function(name, ...)
             callbackResponses[name] = table.pack(...)

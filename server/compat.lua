@@ -105,7 +105,7 @@ local surface = {
 }
 
 for name, fn in pairs(surface) do
-    QB.compat.provideExport('pma-voice', name, fn)
+    Kora.compat.provideExport('pma-voice', name, fn)
 end
 
 Voice.compat = Voice.compat or {}

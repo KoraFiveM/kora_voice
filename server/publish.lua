@@ -97,7 +97,7 @@ function Pub.roster(kind, channel)
     local groups = byBucket(members)
 
     for _, src in ipairs(members) do
-        QB.events.push(src, ('qbvoice:%s:roster'):format(kind), {
+        Kora.events.push(src, ('qbvoice:%s:roster'):format(kind), {
             channel = channel,
             members = groups[bucketOf(src)] or { src },
         })
@@ -113,7 +113,7 @@ end
 ---@param src integer
 ---@param kind 'radio'|'call'
 function Pub.cleared(src, kind)
-    QB.events.push(src, ('qbvoice:%s:roster'):format(kind), {
+    Kora.events.push(src, ('qbvoice:%s:roster'):format(kind), {
         channel = false,
         members = {},
     })

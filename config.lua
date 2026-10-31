@@ -237,7 +237,7 @@ Config.state = {
 
 -- --- keybinds ---------------------------------------------------------------
 --
--- Defaults only. Every one goes through QB.keybind.add, so all of them appear
+-- Defaults only. Every one goes through Kora.keybind.add, so all of them appear
 -- in FiveM's own key-binding settings and every player can rebind them.
 Config.keybinds = {
     cycleProximity = 'GRAVE',      -- step whisper -> normal -> shout (the grave/tilde key)
@@ -271,13 +271,13 @@ Config.rateLimit = {
 }
 
 -- Registers this resource-owned configuration with kora_lib without changing its public Config table.
-if QB and QB.config and QB.config.adopt then
-    Config.radio.restricted = QB.config.map(Config.radio.restricted, nil, {
+if Kora and Kora.config and Kora.config.adopt then
+    Config.radio.restricted = Kora.config.map(Config.radio.restricted, nil, {
         keyType = 'integer',
         scope = 'server',
         live = true,
         label = 'Restricted radio channels',
         description = 'Controls who may join each restricted radio channel. Each row key is a channel number; its value lists allowed jobs or job types and can require on-duty status. Channels omitted here remain open. Saved changes govern subsequent join requests without a resource restart; they do not remove players already listening. These rules remain server-only.',
     })
-    Config = QB.config.adopt(Config)
+    Config = Kora.config.adopt(Config)
 end

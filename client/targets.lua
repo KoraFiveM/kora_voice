@@ -344,7 +344,7 @@ end
 ---waiting for the next tick.
 ---@return integer timerId
 function T.start()
-    return QB.timers.setInterval(function()
+    return Kora.timers.setInterval(function()
         T.rebuild()
     end, Config.mumble.refreshInterval)
 end

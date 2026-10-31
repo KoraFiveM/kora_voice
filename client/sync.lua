@@ -94,7 +94,7 @@ CreateThread(function()
     while not NetworkIsSessionStarted() do Wait(0) end
 
     -- The session flag can flip a tick before the server id is readable, and
-    -- QB.cache only re-reads its natives on kora_lib's shared tick -- so spinning
+    -- Kora.cache only re-reads its natives on kora_lib's shared tick -- so spinning
     -- on the flag alone can still leave this at -1. Spin on the id itself.
     local serverId = GetPlayerServerId(PlayerId())
     while not serverId or serverId <= 0 do
@@ -104,15 +104,15 @@ CreateThread(function()
 
     local bag = ('player:%s'):format(serverId)
 
-    QB.state.onChange(Config.state.radio, bag, function(change)
+    Kora.state.onChange(Config.state.radio, bag, function(change)
         applyRadio(change.value)
     end)
 
-    QB.state.onChange(Config.state.call, bag, function(change)
+    Kora.state.onChange(Config.state.call, bag, function(change)
         applyCall(change.value)
     end)
 
-    QB.events.onPush('qbvoice:radio:roster', function(payload)
+    Kora.events.onPush('qbvoice:radio:roster', function(payload)
         -- The roster push also carries the channel, and it is applied FIRST:
         -- on a resource restart the push can arrive before the bag replicates,
         -- and members without a channel would be dropped by
@@ -121,7 +121,7 @@ CreateThread(function()
         Sync.applyRoster('radio', payload)
     end)
 
-    QB.events.onPush('qbvoice:call:roster', function(payload)
+    Kora.events.onPush('qbvoice:call:roster', function(payload)
         if payload and payload.channel ~= nil then applyCall(payload.channel) end
         Sync.applyRoster('call', payload)
     end)
@@ -130,7 +130,7 @@ CreateThread(function()
     -- `ensure kora_voice` against a live, already-logged-in server work: every
     -- change that happened before the subscriptions existed is re-stated here.
     -- Ordering matters -- asking first and arming second would race the answer.
-    local published = QB.callback.trigger('qbvoice:sync')
+    local published = Kora.callback.trigger('qbvoice:sync')
     if type(published) == 'table' then
         applyRadio(published.radio)
         applyCall(published.call)

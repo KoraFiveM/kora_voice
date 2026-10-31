@@ -3,7 +3,7 @@
 -- a parallel implementation.
 local h = dofile('test/harness.lua')
 local mocks = dofile('test/mocks.lua'); local net = mocks.install()
-QB.compat = dofile('../kora_lib/compat/provider.lua')()
+Kora.compat = dofile('../kora_lib/compat/provider.lua')()
 dofile('config.lua')
 dofile('shared/channels.lua')
 dofile('server/store.lua')

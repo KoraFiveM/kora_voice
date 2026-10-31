@@ -241,7 +241,7 @@ exports.kora_voice:isChannelRestricted(channel)        --> boolean
 
 The server `refreshVoiceTargets(src)` republishes that player's current radio and
 call rosters after a routing bucket change, without changing membership. The
-shipped QB player bucket setters notify the server-local
+shipped Kora player bucket setters notify the server-local
 `qbvoice:server:bucketChanged` event. External resources using the raw
 `SetPlayerRoutingBucket` native must call this export or trigger that local event
 after the native succeeds. The no-argument client export only rebuilds the targets

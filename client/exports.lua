@@ -18,7 +18,7 @@ Voice = Voice or {}
 ---@param channel integer|nil nil or 0 leaves the current channel
 ---@return boolean ok, string|nil reason nil `reason` on a false means the round trip timed out, NOT that the server refused silently
 exports('addPlayerToRadio', function(channel)
-    local ok, reason = QB.callback.trigger('qbvoice:requestRadio', channel)
+    local ok, reason = Kora.callback.trigger('qbvoice:requestRadio', channel)
 
     -- A timed-out callback returns NO values, so `ok` is nil rather than false.
     -- Reporting that as a refusal would invent a decision the server never
@@ -32,13 +32,13 @@ end)
 ---able to get stuck on a channel.
 ---@return boolean
 exports('removePlayerFromRadio', function()
-    return QB.callback.trigger('qbvoice:leaveRadio') == true
+    return Kora.callback.trigger('qbvoice:leaveRadio') == true
 end)
 
 ---Leaves the current call.
 ---@return boolean
 exports('removePlayerFromCall', function()
-    return QB.callback.trigger('qbvoice:leaveCall') == true
+    return Kora.callback.trigger('qbvoice:leaveCall') == true
 end)
 
 ---This player's published radio channel, or false.
