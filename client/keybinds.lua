@@ -46,8 +46,7 @@ Kora.keybind.add({
         CreateThread(function() Voice.targets.refresh() end)
 
         TriggerEvent('qbvoice:client:radioActive', true)
-        -- pma-voice's own name for the same thing, so a radio UI written
-        -- against it lights up.
+        -- pma-voice's name for the same event, for UIs written against it.
         TriggerEvent('pma-voice:radioActive', true)
     end,
 

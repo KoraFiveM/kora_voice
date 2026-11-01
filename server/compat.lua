@@ -51,8 +51,6 @@ if Config.compat.refuseOnConflict and conflicting('pma-voice') then
     error('qbvoice: pma-voice is running; stop it before starting qbvoice (both drive the same Mumble voice target)')
 end
 
--- --- inbound events (client -> server) --------------------------------------
-
 RegisterNetEvent('pma-voice:setPlayerRadio', function(channel)
     Voice.api.requestClient(source, channel)
 end)
@@ -71,8 +69,6 @@ RegisterNetEvent('pma-voice:removePlayerFromCall', function(channel)
     Voice.api.removeCallClient(source, channel)
 end)
 
--- --- export identity --------------------------------------------------------
---
 -- Only the SERVER half of pma-voice's surface. The client half is registered
 -- from client/compat.lua, in the client realm, where those exports live.
 local surface = {
