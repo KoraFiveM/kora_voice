@@ -219,8 +219,8 @@ function T.rebuild()
 
     if type(MumbleSetVoiceTarget) == 'function' then MumbleSetVoiceTarget(target) end
 
-    -- Received-audio processing. Kept here rather than in its own tick because it needs the same grid and
-    -- the same distances. A second tick would recompute both.
+    -- Received-audio processing. Kept here rather than in its own tick because
+    -- it needs the same grid and the same distances.
     local myPed = type(GetPlayerPed) == 'function' and GetPlayerPed(PlayerId()) or nil
 
     -- serverId -> the volume this speaker should be heard at. Accumulated
@@ -258,7 +258,6 @@ function T.rebuild()
             end
         end
     end
-
 
     if Voice.state.data.call then
         for _, serverId in ipairs(Voice.state.data.callMembers) do

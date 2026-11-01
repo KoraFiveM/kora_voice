@@ -26,7 +26,6 @@ Sub.ids = ids
 ---@return integer|nil
 local function hash(name)
     if type(joaat) == 'function' then return joaat(name) end
-    if type(joaat) == 'function' then return joaat(name) end
     return nil
 end
 

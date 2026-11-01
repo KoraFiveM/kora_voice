@@ -157,9 +157,7 @@ function S.activeRadioChannels()
     return out
 end
 
----Wipes the registry. Test-only, and named with a leading underscore for the
----same reason kora_dispatch's store is: it must never be reachable from a
----gameplay path, and the name is the reminder.
+---Wipes the registry. Test-only.
 function S._reset()
     radioMembers, callMembers, radioOf, callOf = {}, {}, {}, {}
 end

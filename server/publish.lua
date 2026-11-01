@@ -48,10 +48,7 @@ local function writeBag(src, key, value)
     local player = Player(src)
     if not player or not player.state then return end
 
-    -- Spelled as an if, NOT as `value == nil and false or value`: that idiom
-    -- evaluates to `false or nil` and hands back the nil it was meant to
-    -- replace, which is the exact deletion this helper exists to prevent. It
-    -- reads correct and is silently wrong.
+    -- An if, not `value == nil and false or value`, which evaluates back to nil.
     if value == nil then value = false end
 
     player.state:set(key, value, Config.state.replicate)
