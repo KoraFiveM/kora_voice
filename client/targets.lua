@@ -219,9 +219,7 @@ function T.rebuild()
 
     if type(MumbleSetVoiceTarget) == 'function' then MumbleSetVoiceTarget(target) end
 
-    -- --- received-audio processing, same pass ---
-    --
-    -- Kept here rather than in its own tick because it needs the same grid and
+    -- Received-audio processing. Kept here rather than in its own tick because it needs the same grid and
     -- the same distances. A second tick would recompute both.
     local myPed = type(GetPlayerPed) == 'function' and GetPlayerPed(PlayerId()) or nil
 

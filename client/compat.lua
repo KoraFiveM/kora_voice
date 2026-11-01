@@ -52,8 +52,6 @@ end
 Voice.compat = Voice.compat or {}
 Voice.compat.client = surface
 
--- --- inbound events ---------------------------------------------------------
---
 -- pma-voice's server half fires these at its clients. Both are local audio
 -- properties, so a server telling a client to change one grants nothing.
 

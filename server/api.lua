@@ -253,8 +253,6 @@ AddEventHandler('QBCore:Server:OnPlayerUnload', function(src)
     if characterRadio[src] then commitRadio(src, nil) end
 end)
 
--- --- exports ----------------------------------------------------------------
---
 -- All server-side, all trusted. There is no client export that changes
 -- membership anywhere in this resource -- see client/exports.lua.
 
