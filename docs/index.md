@@ -87,6 +87,19 @@ Push-to-talk on its own key (caps lock by default), separate from proximity talk
 — a player has to be able to say something to the room without it going out over
 the air. Pressing it with no channel does nothing, silently.
 
+### The radio item
+
+Using the `radio` inventory item (`Config.radio.item`) opens a small frequency
+dialog. The server registers the use handler through `kora_core`'s
+`createUseable`, and re-registers it when `kora_inventory` restarts.
+
+Flow: use item → server tells the client to open the dialog
+(`qbvoice:client:openRadio`) → the client sends a normal request through
+`addPlayerToRadio` (or `removePlayerFromRadio` for 0 or an empty value) → the
+server decides as it does for every request. Refusals show the server's generic
+reason. Cancelling the dialog changes nothing. The item grants no membership on
+its own and is not required to talk.
+
 ### Restricting frequencies
 
 Three ways a channel opens up, evaluated in this order:
