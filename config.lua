@@ -48,6 +48,11 @@ Config.radio = {
     minChannel = 1,
     maxChannel = 1000,
 
+    -- Inventory item that opens the frequency dialog (server/item.lua registers
+    -- the use handler under this name). The item definition itself lives in
+    -- kora_core; change both together.
+    item = 'radio',
+
     -- Channels a player may NOT simply join. The key is the channel id; the
     -- value declares who may. This is the SERVER's list -- a client never sees
     -- it and never evaluates it, because a client that decides its own

@@ -50,6 +50,7 @@ server_scripts {
     'server/publish.lua',
     'server/api.lua',
     'server/net.lua',
+    'server/item.lua',
     'server/compat.lua',
     'server/dev.lua',
 }
@@ -67,6 +68,7 @@ client_scripts {
     'client/sync.lua',
     'client/keybinds.lua',
     'client/exports.lua',
+    'client/radio_item.lua',
     'client/compat.lua',
 }
 
