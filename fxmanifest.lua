@@ -76,3 +76,6 @@ client_scripts {
 -- indicator already belongs to kora_hud, which reads the native talking state and
 -- therefore needs no integration here -- adding a second indicator would put
 -- two of them on screen.
+
+-- kora_qa: Gherkin test scenarios (converted legacy tests), see [kora]/kora_qa/README.md
+qa_feature 'tests/*.feature'
