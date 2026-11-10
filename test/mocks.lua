@@ -160,13 +160,13 @@ function M.install()
     -- mock with a different shape would test nothing.
     local players = {}
 
-    local qbcore = {}
-    function qbcore:getJob(src)
+    local kora_core = {}
+    function kora_core:getJob(src)
         local p = players[src]
         if not p then return nil end
         return { name = p.job, type = p.type, onduty = p.onDuty }
     end
-    function qbcore:getPlayers()
+    function kora_core:getPlayers()
         local out = {}
         for src in pairs(players) do out[#out + 1] = src end
         table.sort(out)
@@ -191,7 +191,7 @@ function M.install()
     end
 
     _G.exports = setmetatable(
-        { kora_core = qbcore, kora_voice = setmetatable({}, { __index = proxy }) },
+        { kora_core = kora_core, kora_voice = setmetatable({}, { __index = proxy }) },
         { __call = function(_, name, fn) registered[name] = fn end })
 
     -- --- kora_lib ---

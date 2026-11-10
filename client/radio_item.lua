@@ -69,7 +69,7 @@ local function openFrequencyDialog()
     end
 end
 
-RegisterNetEvent('qbvoice:client:openRadio', function()
+RegisterNetEvent('kora_voice:client:openRadio', function()
     if dialogOpen then return end
     dialogOpen = true
 
@@ -77,7 +77,7 @@ RegisterNetEvent('qbvoice:client:openRadio', function()
         local ok, err = pcall(openFrequencyDialog)
         dialogOpen = false
         if not ok then
-            print(('[qbvoice] radio item dialog failed: %s'):format(tostring(err)))
+            print(('[kora_voice] radio item dialog failed: %s'):format(tostring(err)))
         end
     end)
 end)

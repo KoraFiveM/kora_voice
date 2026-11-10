@@ -45,7 +45,7 @@ local grants = {}
 ---@return integer handle
 function P.addHook(fn)
     assert(type(fn) == 'function' or (type(fn) == 'table' and getmetatable(fn) and getmetatable(fn).__call),
-        'qbvoice: a radio policy hook must be callable')
+        'kora_voice: a radio policy hook must be callable')
 
     hooks[#hooks + 1] = { resource = GetInvokingResource and GetInvokingResource() or nil, fn = fn }
     return #hooks
@@ -54,13 +54,13 @@ end
 -- A legacy channel check owns its frequency, before generic hooks or grants.
 function P.addChannelCheck(channel, fn)
     assert(type(channel) == 'number' and Voice.channels.normalise(channel) == channel,
-        'qbvoice: channel must be a valid radio channel number')
-    assert(Kora.compat.isCallable(fn), 'qbvoice: channel check must be callable')
+        'kora_voice: channel must be a valid radio channel number')
+    assert(Kora.compat.isCallable(fn), 'kora_voice: channel check must be callable')
     channelChecks[channel] = { resource = GetInvokingResource(), fn = fn }
 end
 
 function P.removeChannelCheck(channel)
-    assert(type(channel) == 'number', 'qbvoice: channel must be a number')
+    assert(type(channel) == 'number', 'kora_voice: channel must be a number')
     channelChecks[channel] = nil
 end
 
@@ -164,7 +164,7 @@ function P.canJoin(src, channel)
             -- broken one, and taking voice down with it turns one bug into a
             -- server-wide outage.
             if not ok then
-                print(('[qbvoice] radio policy hook from %s errored: %s')
+                print(('[kora_voice] radio policy hook from %s errored: %s')
                     :format(tostring(entry.resource), tostring(allowed)))
             elseif allowed == false then
                 return false, type(reason) == 'string' and reason or Config.radio.refusedMessage

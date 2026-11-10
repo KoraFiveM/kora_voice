@@ -75,7 +75,7 @@ local function commitRadio(src, channel, characterOwned)
         Voice.publish.cleared(src, 'radio')
     end
 
-    TriggerEvent('qbvoice:server:radioChanged', src, current or false, previous or false)
+    TriggerEvent('kora_voice:server:radioChanged', src, current or false, previous or false)
     return true
 end
 
@@ -95,7 +95,7 @@ local function commitCall(src, channel)
         Voice.publish.cleared(src, 'call')
     end
 
-    TriggerEvent('qbvoice:server:callChanged', src, current or false, previous or false)
+    TriggerEvent('kora_voice:server:callChanged', src, current or false, previous or false)
     return true
 end
 
@@ -107,14 +107,14 @@ end
 ---@param channel integer|nil
 ---@return boolean ok, string|nil error
 function A.assign(src, channel)
-    if type(src) ~= 'number' then return false, 'qbvoice: src must be a number' end
+    if type(src) ~= 'number' then return false, 'kora_voice: src must be a number' end
 
     local normalised = Voice.channels.normalise(channel)
     -- A channel that was GIVEN but did not normalise is a caller bug worth
     -- reporting, not a silent "leave the radio". Only an explicit nil/false
     -- means leave.
     if channel ~= nil and channel ~= false and not normalised then
-        return false, ('qbvoice: %s is not a valid radio channel'):format(tostring(channel))
+        return false, ('kora_voice: %s is not a valid radio channel'):format(tostring(channel))
     end
 
     characterRadio[src] = nil
@@ -185,11 +185,11 @@ end
 ---@param channel integer|nil
 ---@return boolean ok, string|nil error
 function A.assignCall(src, channel)
-    if type(src) ~= 'number' then return false, 'qbvoice: src must be a number' end
+    if type(src) ~= 'number' then return false, 'kora_voice: src must be a number' end
 
     local normalised = Voice.channels.normaliseCall(channel)
     if channel ~= nil and channel ~= false and not normalised then
-        return false, ('qbvoice: %s is not a valid call channel'):format(tostring(channel))
+        return false, ('kora_voice: %s is not a valid call channel'):format(tostring(channel))
     end
 
     commitCall(src, normalised)
@@ -386,7 +386,7 @@ end)
 ---@return string|nil reason
 local function refreshVoiceTargets(src)
     src = tonumber(src)
-    if not src then return false, 'qbvoice: src must be a number' end
+    if not src then return false, 'kora_voice: src must be a number' end
     if not Config.buckets.enforce then return true end
 
     Voice.publish.roster('radio', Voice.store.getRadio(src))
@@ -394,5 +394,5 @@ local function refreshVoiceTargets(src)
     return true
 end
 
-AddEventHandler('qbvoice:server:bucketChanged', refreshVoiceTargets)
+AddEventHandler('kora_voice:server:bucketChanged', refreshVoiceTargets)
 exports('refreshVoiceTargets', refreshVoiceTargets)

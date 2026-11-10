@@ -10,7 +10,7 @@
 Voice = Voice or {}
 
 Kora.keybind.add({
-    name = 'qbvoice_proximity',
+    name = 'kora_voice_proximity',
     description = 'Voice: cycle talk range (whisper/normal/shout)',
     defaultKey = Config.keybinds.cycleProximity,
     onPressed = function()
@@ -26,7 +26,7 @@ local function click(spec)
 end
 
 Kora.keybind.add({
-    name = 'qbvoice_radio',
+    name = 'kora_voice_radio',
     description = 'Voice: talk on the radio (push to talk)',
     defaultKey = Config.keybinds.radioTalk,
 
@@ -45,7 +45,7 @@ Kora.keybind.add({
         Voice.state.markDirty()
         CreateThread(function() Voice.targets.refresh() end)
 
-        TriggerEvent('qbvoice:client:radioActive', true)
+        TriggerEvent('kora_voice:client:radioActive', true)
         -- pma-voice's name for the same event, for UIs written against it.
         TriggerEvent('pma-voice:radioActive', true)
     end,
@@ -61,13 +61,13 @@ Kora.keybind.add({
         Voice.state.markDirty()
         CreateThread(function() Voice.targets.refresh() end)
 
-        TriggerEvent('qbvoice:client:radioActive', false)
+        TriggerEvent('kora_voice:client:radioActive', false)
         TriggerEvent('pma-voice:radioActive', false)
     end,
 })
 
 Kora.keybind.add({
-    name = 'qbvoice_megaphone',
+    name = 'kora_voice_megaphone',
     description = 'Voice: megaphone',
     -- Unbound by default: a megaphone belongs to a vehicle or a prop, and a
     -- resource that owns one calls exports.kora_voice:setMegaphone instead. The
@@ -80,7 +80,7 @@ Kora.keybind.add({
 
         Voice.proximity.apply()
         CreateThread(function() Voice.targets.refresh() end)
-        TriggerEvent('qbvoice:client:megaphone', true)
+        TriggerEvent('kora_voice:client:megaphone', true)
     end,
 
     onReleased = function()
@@ -91,6 +91,6 @@ Kora.keybind.add({
         -- whispering again after they put it down.
         Voice.proximity.apply()
         CreateThread(function() Voice.targets.refresh() end)
-        TriggerEvent('qbvoice:client:megaphone', false)
+        TriggerEvent('kora_voice:client:megaphone', false)
     end,
 })

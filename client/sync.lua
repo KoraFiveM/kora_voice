@@ -44,7 +44,7 @@ local function applyRadio(value)
     -- Both event names on purpose: the kora_voice one for new code, the pma-voice
     -- one because a phone or radio UI written against pma-voice listens for it
     -- and would otherwise show a channel the player is no longer on.
-    TriggerEvent('qbvoice:client:radioChanged', channel)
+    TriggerEvent('kora_voice:client:radioChanged', channel)
     TriggerEvent('pma-voice:setRadioChannel', channel or 0)
 
     refreshNow()
@@ -56,7 +56,7 @@ local function applyCall(value)
 
     if not Voice.state.setCall(channel) then return end
 
-    TriggerEvent('qbvoice:client:callChanged', channel)
+    TriggerEvent('kora_voice:client:callChanged', channel)
     TriggerEvent('pma-voice:setCallChannel', channel or 0)
 
     refreshNow()
@@ -112,7 +112,7 @@ CreateThread(function()
         applyCall(change.value)
     end)
 
-    Kora.events.onPush('qbvoice:radio:roster', function(payload)
+    Kora.events.onPush('kora_voice:radio:roster', function(payload)
         -- The roster push also carries the channel, and it is applied FIRST:
         -- on a resource restart the push can arrive before the bag replicates,
         -- and members without a channel would be dropped by
@@ -121,7 +121,7 @@ CreateThread(function()
         Sync.applyRoster('radio', payload)
     end)
 
-    Kora.events.onPush('qbvoice:call:roster', function(payload)
+    Kora.events.onPush('kora_voice:call:roster', function(payload)
         if payload and payload.channel ~= nil then applyCall(payload.channel) end
         Sync.applyRoster('call', payload)
     end)
@@ -130,7 +130,7 @@ CreateThread(function()
     -- `ensure kora_voice` against a live, already-logged-in server work: every
     -- change that happened before the subscriptions existed is re-stated here.
     -- Ordering matters -- asking first and arming second would race the answer.
-    local published = Kora.callback.trigger('qbvoice:sync')
+    local published = Kora.callback.trigger('kora_voice:sync')
     if type(published) == 'table' then
         applyRadio(published.radio)
         applyCall(published.call)
@@ -148,6 +148,6 @@ end)
 -- A respawn resets the proximity mode to the configured default. Shouting is a
 -- deliberate act, and a player who died mid-shout and respawned still shouting
 -- is broadcasting to 35 metres without having chosen to.
-AddEventHandler('qbcore:client:onPlayerLoaded', function()
+AddEventHandler('kora_core:client:onPlayerLoaded', function()
     Voice.proximity.set(Voice.modes.defaultIndex())
 end)

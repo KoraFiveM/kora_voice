@@ -48,7 +48,7 @@ local function conflicting(name)
 end
 
 if Config.compat.refuseOnConflict and conflicting('pma-voice') then
-    error('qbvoice: pma-voice is running; stop it before starting qbvoice (both drive the same Mumble voice target)')
+    error('kora_voice: pma-voice is running; stop it before starting kora_voice (both drive the same Mumble voice target)')
 end
 
 RegisterNetEvent('pma-voice:setPlayerRadio', function(channel)

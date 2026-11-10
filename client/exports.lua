@@ -7,7 +7,7 @@
 -- client/sync.lua applies. A caller that treats a `true` return as "I am now on
 -- channel 3" is reading it right; a caller that assumes the local state
 -- already reflects it on the next line is not, and should listen for
--- `qbvoice:client:radioChanged` instead.
+-- `kora_voice:client:radioChanged` instead.
 
 Voice = Voice or {}
 
@@ -18,7 +18,7 @@ Voice = Voice or {}
 ---@param channel integer|nil nil or 0 leaves the current channel
 ---@return boolean ok, string|nil reason nil `reason` on a false means the round trip timed out, NOT that the server refused silently
 exports('addPlayerToRadio', function(channel)
-    local ok, reason = Kora.callback.trigger('qbvoice:requestRadio', channel)
+    local ok, reason = Kora.callback.trigger('kora_voice:requestRadio', channel)
 
     -- A timed-out callback returns NO values, so `ok` is nil rather than false.
     -- Reporting that as a refusal would invent a decision the server never
@@ -32,13 +32,13 @@ end)
 ---able to get stuck on a channel.
 ---@return boolean
 exports('removePlayerFromRadio', function()
-    return Kora.callback.trigger('qbvoice:leaveRadio') == true
+    return Kora.callback.trigger('kora_voice:leaveRadio') == true
 end)
 
 ---Leaves the current call.
 ---@return boolean
 exports('removePlayerFromCall', function()
-    return Kora.callback.trigger('qbvoice:leaveCall') == true
+    return Kora.callback.trigger('kora_voice:leaveCall') == true
 end)
 
 ---This player's published radio channel, or false.
@@ -154,7 +154,7 @@ exports('setVoiceProperty', function(property, value)
         -- Reported rather than silently ignored: an unknown property is a
         -- typo'd call site, and a silently dropped setVoiceProperty presents as
         -- "the volume slider does nothing".
-        print(('[qbvoice] setVoiceProperty: unknown property %s'):format(tostring(property)))
+        print(('[kora_voice] setVoiceProperty: unknown property %s'):format(tostring(property)))
         return false
     end
 

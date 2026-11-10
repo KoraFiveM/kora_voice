@@ -2,7 +2,7 @@
 --
 -- Two channels out, and they answer two different questions:
 --
---   * the STATE BAG (`qbvoice:radio` / `qbvoice:call`) answers "what channel is
+--   * the STATE BAG (`kora_voice:radio` / `kora_voice:call`) answers "what channel is
 --     this player on" for anybody who wants to know -- a HUD, a phone UI, a job
 --     script. It is a fact about a player, replicated like any other.
 --
@@ -94,7 +94,7 @@ function Pub.roster(kind, channel)
     local groups = byBucket(members)
 
     for _, src in ipairs(members) do
-        Kora.events.push(src, ('qbvoice:%s:roster'):format(kind), {
+        Kora.events.push(src, ('kora_voice:%s:roster'):format(kind), {
             channel = channel,
             members = groups[bucketOf(src)] or { src },
         })
@@ -110,7 +110,7 @@ end
 ---@param src integer
 ---@param kind 'radio'|'call'
 function Pub.cleared(src, kind)
-    Kora.events.push(src, ('qbvoice:%s:roster'):format(kind), {
+    Kora.events.push(src, ('kora_voice:%s:roster'):format(kind), {
         channel = false,
         members = {},
     })

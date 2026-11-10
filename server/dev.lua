@@ -14,7 +14,7 @@ RegisterCommand('voicedump', function(src)
     if src ~= 0 then return end
 
     for _, channel in ipairs(Voice.store.activeRadioChannels()) do
-        print(('[qbvoice] radio %d: %s'):format(
+        print(('[kora_voice] radio %d: %s'):format(
             channel, table.concat(Voice.store.radioMembersOf(channel), ', ')))
     end
 end, true)
@@ -27,9 +27,9 @@ RegisterCommand('voicerequest', function(src, args)
 
     local target = tonumber(args[1])
     local channel = tonumber(args[2])
-    if not target then return print('[qbvoice] usage: voicerequest <src> <channel|0>') end
+    if not target then return print('[kora_voice] usage: voicerequest <src> <channel|0>') end
 
     local ok, reason = Voice.api.request(target, channel)
-    print(('[qbvoice] request(%d, %s) -> %s%s'):format(
+    print(('[kora_voice] request(%d, %s) -> %s%s'):format(
         target, tostring(channel), tostring(ok), reason and (' (' .. reason .. ')') or ''))
 end, true)

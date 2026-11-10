@@ -29,7 +29,7 @@ local function pmaExport(name)
     return captured
 end
 
-h.test('the qbvoice client surface is registered', function()
+h.test('the kora_voice client surface is registered', function()
     for _, name in ipairs({
         'addPlayerToRadio', 'removePlayerFromRadio', 'removePlayerFromCall',
         'getRadioChannel', 'getCallChannel',
@@ -55,7 +55,7 @@ end)
 
 h.test('addPlayerToRadio asks, and never asserts', function()
     Voice.state.setRadio(false)
-    net.setCallbackResponse('qbvoice:requestRadio', true)
+    net.setCallbackResponse('kora_voice:requestRadio', true)
 
     local ok = exports.kora_voice:addPlayerToRadio(3)
     h.assertTrue(ok, 'the server agreed')
@@ -69,7 +69,7 @@ h.test('addPlayerToRadio asks, and never asserts', function()
 end)
 
 h.test('a refusal is reported with the servers reason', function()
-    net.setCallbackResponse('qbvoice:requestRadio', false, 'That frequency is restricted.')
+    net.setCallbackResponse('kora_voice:requestRadio', false, 'That frequency is restricted.')
 
     local ok, reason = exports.kora_voice:addPlayerToRadio(2)
     h.assertFalse(ok, 'refused')
@@ -80,7 +80,7 @@ h.test('a timed-out round trip is distinguishable from a refusal', function()
     -- kora_lib returns NO values on a timeout, so `ok` is nil rather than false.
     -- Inventing a reason for a dropped round trip would tell the player
     -- something the server never said.
-    net.setCallbackResponse('qbvoice:requestRadio')
+    net.setCallbackResponse('kora_voice:requestRadio')
 
     local ok, reason = exports.kora_voice:addPlayerToRadio(3)
     h.assertFalse(ok, 'not treated as success')
@@ -168,14 +168,14 @@ h.test('getVoiceProperty can still READ the channel', function()
 end)
 
 h.test('the three keys are registered and rebindable', function()
-    for _, name in ipairs({ 'qbvoice_proximity', 'qbvoice_radio', 'qbvoice_megaphone' }) do
+    for _, name in ipairs({ 'kora_voice_proximity', 'kora_voice_radio', 'kora_voice_megaphone' }) do
         local bind = net.keybinds[name]
         h.assertTrue(bind ~= nil, ('%s is not registered'):format(name))
         h.assertTrue(type(bind.description) == 'string' and #bind.description > 0,
             ('%s needs a description to appear in FiveMs key settings'):format(name))
     end
 
-    h.assertEqual(net.keybinds.qbvoice_proximity.defaultKey, 'GRAVE',
+    h.assertEqual(net.keybinds.kora_voice_proximity.defaultKey, 'GRAVE',
         'the range cycle defaults to the grave key')
 end)
 
@@ -183,7 +183,7 @@ h.test('the radio key does nothing at all with no published channel', function()
     Voice.state.setRadio(false)
     net.clear()
 
-    net.keybinds.qbvoice_radio.onPressed()
+    net.keybinds.kora_voice_radio.onPressed()
 
     -- Silent by design: the default is caps lock, and a notification here would
     -- fire at the whole civilian population.
@@ -197,7 +197,7 @@ h.test('the radio key transmits and announces itself once on a channel', functio
     Voice.state.setRadioMembers({ 1, 2 })
     net.clear()
 
-    net.keybinds.qbvoice_radio.onPressed()
+    net.keybinds.kora_voice_radio.onPressed()
 
     h.assertTrue(Voice.state.isRadioActive(), 'transmitting')
     h.assertEqual(#net.sounds, 1, 'one transmit click')
@@ -205,10 +205,10 @@ h.test('the radio key transmits and announces itself once on a channel', functio
     local names = {}
     for _, event in ipairs(net.localEvents) do names[event.name] = event.args[1] end
     h.assertEqual(names['pma-voice:radioActive'], true, 'pma-voices radioActive fired, so a radio UI lights up')
-    h.assertEqual(names['qbvoice:client:radioActive'], true, 'and qbvoices own')
+    h.assertEqual(names['kora_voice:client:radioActive'], true, 'and its own')
 
     net.clear()
-    net.keybinds.qbvoice_radio.onReleased()
+    net.keybinds.kora_voice_radio.onReleased()
     h.assertFalse(Voice.state.isRadioActive(), 'and stops on release')
 
     -- The rebuild on release matters: leaving the roster in the target until
@@ -218,26 +218,26 @@ end)
 
 h.test('the megaphone key changes the range and the submix routing', function()
     net.clear()
-    net.keybinds.qbvoice_megaphone.onPressed()
+    net.keybinds.kora_voice_megaphone.onPressed()
 
     h.assertTrue(Voice.state.data.megaphone, 'active')
     h.assertEqual(net.nativesNamed('MumbleSetTalkerProximity')[1].args[1], Config.submix.megaphone.range,
         'and the megaphone range applied')
 
-    net.keybinds.qbvoice_megaphone.onReleased()
+    net.keybinds.kora_voice_megaphone.onReleased()
     h.assertFalse(Voice.state.data.megaphone, 'and released')
 end)
 
 h.test('legacy setRadioChannel uses the authorized request without asserting membership', function()
     Voice.state.setRadio(false)
-    net.setCallbackResponse('qbvoice:requestRadio', true)
+    net.setCallbackResponse('kora_voice:requestRadio', true)
     h.assertTrue(pmaExport('setRadioChannel')(5))
     h.assertEqual(Voice.state.data.radio, false, 'membership awaits server replication')
-    net.setCallbackResponse('qbvoice:requestRadio', false, 'restricted')
+    net.setCallbackResponse('kora_voice:requestRadio', false, 'restricted')
     local ok, reason = pmaExport('setRadioChannel')(2)
     h.assertFalse(ok)
     h.assertEqual(reason, 'restricted')
-    net.setCallbackResponse('qbvoice:requestRadio', true)
+    net.setCallbackResponse('kora_voice:requestRadio', true)
     h.assertTrue(pmaExport('setRadioChannel')(0), 'zero requests leaving')
     h.assertEqual(Voice.state.data.radio, false)
 end)

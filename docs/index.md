@@ -94,7 +94,7 @@ dialog. The server registers the use handler through `kora_core`'s
 `createUseable`, and re-registers it when `kora_inventory` restarts.
 
 Flow: use item → server tells the client to open the dialog
-(`qbvoice:client:openRadio`) → the client sends a normal request through
+(`kora_voice:client:openRadio`) → the client sends a normal request through
 `addPlayerToRadio` (or `removePlayerFromRadio` for 0 or an empty value) → the
 server decides as it does for every request. Refusals show the server's generic
 reason. Cancelling the dialog changes nothing. The item grants no membership on
@@ -255,7 +255,7 @@ exports.kora_voice:isChannelRestricted(channel)        --> boolean
 The server `refreshVoiceTargets(src)` republishes that player's current radio and
 call rosters after a routing bucket change, without changing membership. The
 shipped Kora player bucket setters notify the server-local
-`qbvoice:server:bucketChanged` event. External resources using the raw
+`kora_voice:server:bucketChanged` event. External resources using the raw
 `SetPlayerRoutingBucket` native must call this export or trigger that local event
 after the native succeeds. The no-argument client export only rebuilds the targets
 from the last server roster; it does not fetch a new roster.
@@ -295,7 +295,7 @@ exports.kora_voice:refreshVoiceTargets()          --> boolean
 `addPlayerToRadio` returns whether the **server agreed** — not that the local
 player is on that channel. Membership arrives afterwards as a published value.
 Code that needs to act on the real thing should listen for
-`qbvoice:client:radioChanged`.
+`kora_voice:client:radioChanged`.
 
 `false, nil` means the round trip **timed out**; `false, '<reason>'` means the
 server refused. They are different events and this resource never conflates them.
@@ -313,16 +313,16 @@ Client-side, emitted:
 
 | Event | Payload |
 | --- | --- |
-| `qbvoice:client:radioChanged` | `channel \| false` |
-| `qbvoice:client:callChanged` | `channel \| false` |
-| `qbvoice:client:radioActive` | `boolean` |
-| `qbvoice:client:megaphone` | `boolean` |
+| `kora_voice:client:radioChanged` | `channel \| false` |
+| `kora_voice:client:callChanged` | `channel \| false` |
+| `kora_voice:client:radioActive` | `boolean` |
+| `kora_voice:client:megaphone` | `boolean` |
 | `pma-voice:setRadioChannel` | `channel \| 0` |
 | `pma-voice:setCallChannel` | `channel \| 0` |
 | `pma-voice:radioActive` | `boolean` |
 
-Server-side, emitted: `qbvoice:server:radioChanged(src, channel, previous)` and
-`qbvoice:server:callChanged(src, channel, previous)`. Both carry `false` rather
+Server-side, emitted: `kora_voice:server:radioChanged(src, channel, previous)` and
+`kora_voice:server:callChanged(src, channel, previous)`. Both carry `false` rather
 than `nil` for "no channel", so the value survives an event boundary.
 
 Client-side, accepted: `pma-voice:setTalkingMode`, `pma-voice:setVoiceProperty` —
@@ -338,8 +338,8 @@ Server-side, accepted (as **untrusted client requests**):
 
 | Key | Value |
 | --- | --- |
-| `qbvoice:radio` | integer channel, or `false` |
-| `qbvoice:call` | integer channel, or `false` |
+| `kora_voice:radio` | integer channel, or `false` |
+| `kora_voice:call` | integer channel, or `false` |
 
 Written server-side on the player's bag, and **cleared with an explicit
 `false`, never a nil**. A nil write is a key *deletion*, and a deletion does not

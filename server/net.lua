@@ -13,7 +13,7 @@
 
 Voice = Voice or {}
 
-Kora.callback.register('qbvoice:requestRadio', function(src, channel)
+Kora.callback.register('kora_voice:requestRadio', function(src, channel)
     local ok, reason = Voice.api.requestClient(src, channel)
     if ok then return true end
 
@@ -24,7 +24,7 @@ Kora.callback.register('qbvoice:requestRadio', function(src, channel)
     return false, reason
 end, { rateLimit = Config.rateLimit.radio })
 
-Kora.callback.register('qbvoice:leaveRadio', function(src)
+Kora.callback.register('kora_voice:leaveRadio', function(src)
     return Voice.api.requestClient(src, nil)
 end, { rateLimit = Config.rateLimit.radio })
 
@@ -33,7 +33,7 @@ end, { rateLimit = Config.rateLimit.radio })
 -- through the trusted server export. A client asking to join a call channel is
 -- a client asking to listen to somebody else's phone call, so leaving is the
 -- only call operation exposed here -- hanging up on yourself grants no audio.
-Kora.callback.register('qbvoice:leaveCall', function(src)
+Kora.callback.register('kora_voice:leaveCall', function(src)
     return Voice.api.removeCallClient(src, nil)
 end, { rateLimit = Config.rateLimit.call })
 
@@ -43,7 +43,7 @@ end, { rateLimit = Config.rateLimit.call })
 ---`ensure kora_voice` against a live server, and on a fresh spawn, the client
 ---arms its state-bag handlers after the session starts and has missed every
 ---change that happened before that. It asks; the server re-states.
-Kora.callback.register('qbvoice:sync', function(src)
+Kora.callback.register('kora_voice:sync', function(src)
     Voice.publish.resync(src)
 
     return {

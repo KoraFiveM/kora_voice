@@ -33,7 +33,7 @@ h.test('a client cannot join a restricted channel', function()
     reset()
 
     -- Channel 2 is 'LEO Tac 1' in the stock config.
-    local ok, reason = net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 2)
+    local ok, reason = net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2)
 
     h.assertFalse(ok, 'the request must be refused')
     h.assertEqual(reason, Config.radio.refusedMessage, 'and carry the generic reason')
@@ -45,7 +45,7 @@ end)
 
 h.test('the refusal reason never names the job that would be allowed', function()
     reset()
-    local _, reason = net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 2)
+    local _, reason = net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2)
 
     -- Naming the eligible job would tell every civilian which channel the
     -- police are on -- exactly the reconnaissance the restriction prevents.
@@ -55,7 +55,7 @@ end)
 
 h.test('an eligible client is allowed onto the same channel', function()
     reset()
-    local ok = net.invokeCallback('qbvoice:requestRadio', OFFICER, 2)
+    local ok = net.invokeCallback('kora_voice:requestRadio', OFFICER, 2)
 
     h.assertTrue(ok, 'an on-duty officer may join the LEO tac channel')
     h.assertEqual(Voice.store.getRadio(OFFICER), 2, 'and the server recorded it')
@@ -65,31 +65,31 @@ h.test('an off-duty officer is refused a duty-gated channel', function()
     reset()
     net.setPlayer(OFFICER, 'police', 'leo', false)
 
-    h.assertFalse(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2), 'duty is part of the check')
+    h.assertFalse(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2), 'duty is part of the check')
 end)
 
 h.test('a channel whose restriction does not require duty allows an off-duty player', function()
     reset()
     -- Channel 20 is 'Recovery' with no onDuty flag: towing works off duty.
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', TOWIE, 20), 'recovery works off duty')
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', TOWIE, 20), 'recovery works off duty')
 end)
 
 h.test('an unrestricted channel is open to anybody', function()
     reset()
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 400), 'channel 400 is unlisted')
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 400), 'channel 400 is unlisted')
     h.assertEqual(Voice.store.getRadio(CIVILIAN), 400, 'and recorded')
 end)
 
 h.test('leaving is always permitted', function()
     reset()
-    net.invokeCallback('qbvoice:requestRadio', OFFICER, 2)
+    net.invokeCallback('kora_voice:requestRadio', OFFICER, 2)
 
     -- A player must never be able to get stuck on a channel, including one a
     -- policy hook has since decided they may not be on. Leaving grants no
     -- audio, so there is nothing to protect.
     Voice.policy.addHook(function() return false, 'no' end)
 
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', OFFICER, 0), 'zero means leave')
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', OFFICER, 0), 'zero means leave')
     h.assertEqual(Voice.store.getRadio(OFFICER), nil, 'and it took effect despite the refusing hook')
 end)
 
@@ -97,10 +97,10 @@ h.test('a data grant opens a restricted channel for one player only', function()
     reset()
     Voice.policy.grant(CIVILIAN, { 2 })
 
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 2), 'the granted player gets in')
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2), 'the granted player gets in')
 
     Voice.store._reset()
-    h.assertFalse(net.invokeCallback('qbvoice:requestRadio', TOWIE, 2), 'nobody else does')
+    h.assertFalse(net.invokeCallback('kora_voice:requestRadio', TOWIE, 2), 'nobody else does')
 end)
 
 h.test('a grant is dropped on disconnect', function()
@@ -110,7 +110,7 @@ h.test('a grant is dropped on disconnect', function()
 
     -- Source ids are reused. A leftover grant would hand the tac channel to
     -- whoever next occupies that id.
-    h.assertFalse(net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 2), 'the grant went with them')
+    h.assertFalse(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2), 'the grant went with them')
 end)
 
 h.test('a policy hook can refuse an otherwise-open channel', function()
@@ -120,13 +120,13 @@ h.test('a policy hook can refuse an otherwise-open channel', function()
         return nil
     end)
 
-    local ok, reason = net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 400)
+    local ok, reason = net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 400)
     h.assertFalse(ok, 'the hook refused')
     h.assertEqual(reason, 'jammed', 'with its own reason')
 
     -- Abstaining on every other channel is the correct default: a hook that
     -- refused everything outside its range would veto every other job.
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 401), 'other channels unaffected')
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 401), 'other channels unaffected')
 end)
 
 h.test('a policy hook can allow a restricted channel', function()
@@ -136,7 +136,7 @@ h.test('a policy hook can allow a restricted channel', function()
         return nil
     end)
 
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 2), 'an explicit allow overrides config')
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2), 'an explicit allow overrides config')
 end)
 
 h.test('an erroring policy hook abstains instead of taking voice down', function()
@@ -145,8 +145,8 @@ h.test('an erroring policy hook abstains instead of taking voice down', function
 
     -- The erroring resource is the broken one. Taking the radio down with it
     -- would turn one bug into a server-wide outage.
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 400), 'open channels still work')
-    h.assertFalse(net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 2), 'and restrictions still hold')
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 400), 'open channels still work')
+    h.assertFalse(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2), 'and restrictions still hold')
 end)
 
 h.test('removing a hook does not renumber anybody elses handle', function()
@@ -159,7 +159,7 @@ h.test('removing a hook does not renumber anybody elses handle', function()
     -- If removal compacted the list, `second` would now address a different
     -- hook -- and a job resource cleaning up its own would remove somebody
     -- else's.
-    local _, reason = net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 400)
+    local _, reason = net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 400)
     h.assertEqual(reason, 'second', 'the surviving hook is still the one it was')
     h.assertTrue(Voice.policy.removeHook(second), 'and its handle still addresses it')
 end)
@@ -175,7 +175,7 @@ h.test('the untrusted path never reaches the trusted one', function()
     local reached = false
     Voice.api.assign = function(...) reached = true; return original(...) end
 
-    net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 2)
+    net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2)
     Voice.api.assign = original
 
     h.assertFalse(reached, 'Voice.api.request must not call Voice.api.assign')
@@ -194,7 +194,7 @@ end)
 h.test('every client-facing callback carries a rate limit', function()
     -- A join request is the one message a client sends unprompted. Unlimited,
     -- it lets a client walk every channel id looking for an open one.
-    for _, name in ipairs({ 'qbvoice:requestRadio', 'qbvoice:leaveRadio', 'qbvoice:leaveCall', 'qbvoice:sync' }) do
+    for _, name in ipairs({ 'kora_voice:requestRadio', 'kora_voice:leaveRadio', 'kora_voice:leaveCall', 'kora_voice:sync' }) do
         local entry = net.serverCallbacks[name]
         h.assertTrue(entry ~= nil, ('%s should be registered'):format(name))
         h.assertTrue(entry.opts and entry.opts.rateLimit ~= nil, ('%s has no rate limit'):format(name))
@@ -204,8 +204,8 @@ end)
 h.test('there is no client-facing way to JOIN a call channel', function()
     -- A client asking to join a call channel is a client asking to listen to
     -- somebody else's phone call. Only leaving is exposed.
-    h.assertEqual(net.serverCallbacks['qbvoice:requestCall'], nil, 'no join callback exists')
-    h.assertTrue(net.serverCallbacks['qbvoice:leaveCall'] ~= nil, 'but hanging up is allowed')
+    h.assertEqual(net.serverCallbacks['kora_voice:requestCall'], nil, 'no join callback exists')
+    h.assertTrue(net.serverCallbacks['kora_voice:leaveCall'] ~= nil, 'but hanging up is allowed')
 end)
 
 h.test('the pma-voice net events take the player from source, not the payload', function()
@@ -277,7 +277,7 @@ end)
 
 h.test('character unload retires a static job-approved radio through normal publication', function()
     reset()
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     Voice.api.assign(TOWIE, 2)
     Voice.api.assignCall(OFFICER, 5551234)
     Voice.policy.grant(OFFICER, { 3 })
@@ -297,7 +297,7 @@ h.test('character unload retires a static job-approved radio through normal publ
     h.assertEqual(Voice.store.getCall(OFFICER), 5551234)
     h.assertEqual(Voice.policy.grantsOf(OFFICER)[1], 3)
     net.setPlayer(OFFICER, 'unemployed', 'civ', false)
-    h.assertFalse(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertFalse(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     net.clear()
     TriggerEvent('QBCore:Server:OnPlayerUnload', OFFICER)
     h.assertEqual(#net.bagWrites, 0)
@@ -306,14 +306,14 @@ end)
 h.test('character unload preserves open, granted and provider-hook memberships', function()
     reset()
     Voice.policy.grant(CIVILIAN, { 2 })
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 2))
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', TOWIE, 400))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', TOWIE, 400))
     local calls = 0
     Voice.policy.addHook(function(src, channel)
         calls = calls + 1
         if src == OFFICER and channel == 2 then return true end
     end)
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     net.clear()
     TriggerEvent('QBCore:Server:OnPlayerUnload', OFFICER)
     TriggerEvent('QBCore:Server:OnPlayerUnload', CIVILIAN)
@@ -329,30 +329,30 @@ end)
 
 h.test('same-channel trusted assignment retains ownership through a later client request', function()
     reset()
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     net.clear()
     h.assertTrue(exports.kora_voice:setPlayerRadio(OFFICER, 2))
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     h.assertEqual(#net.bagWrites, 0)
     TriggerEvent('QBCore:Server:OnPlayerUnload', OFFICER)
     h.assertEqual(Voice.store.getRadio(OFFICER), 2)
     h.assertEqual(#net.bagWrites, 0)
     h.assertTrue(Voice.compat.server.setPlayerRadio(CIVILIAN, 2))
-    h.assertFalse(net.invokeCallback('qbvoice:requestRadio', CIVILIAN, 2))
+    h.assertFalse(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2))
     TriggerEvent('QBCore:Server:OnPlayerUnload', CIVILIAN)
     h.assertEqual(Voice.store.getRadio(CIVILIAN), 2)
 end)
 
 h.test('rejected client requests and invalid trusted assignments preserve job ownership', function()
     reset()
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     net.clear()
-    local ok, reason = net.invokeCallback('qbvoice:requestRadio', OFFICER, 20)
+    local ok, reason = net.invokeCallback('kora_voice:requestRadio', OFFICER, 20)
     h.assertFalse(ok)
     h.assertEqual(reason, Config.radio.refusedMessage)
     h.assertFalse(exports.kora_voice:setPlayerRadio(OFFICER, 99999))
     net.setPlayer(OFFICER, 'unemployed', 'civ', false)
-    h.assertFalse(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertFalse(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     h.assertEqual(Voice.store.getRadio(OFFICER), 2)
     h.assertEqual(#net.bagWrites, 0)
     TriggerEvent('QBCore:Server:OnPlayerUnload', OFFICER)
@@ -367,12 +367,12 @@ h.test('legacy joins, explicit leave and hard disconnect retain their contracts'
     TriggerEvent('QBCore:Server:OnPlayerUnload', OFFICER)
     h.assertEqual(Voice.store.getRadio(OFFICER), nil)
     net.fireNet('pma-voice:setPlayerRadio', OFFICER, 2)
-    h.assertTrue(net.invokeCallback('qbvoice:leaveRadio', OFFICER))
+    h.assertTrue(net.invokeCallback('kora_voice:leaveRadio', OFFICER))
     net.clear()
     TriggerEvent('QBCore:Server:OnPlayerUnload', OFFICER)
     h.assertEqual(#net.bagWrites, 0)
     Voice.policy.grant(OFFICER, { 2 })
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     source = OFFICER
     TriggerEvent('playerDropped')
     h.assertEqual(Voice.store.getRadio(OFFICER), nil)
@@ -381,7 +381,7 @@ end)
 
 h.test('granting permission does not transfer an existing job membership', function()
     reset()
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     net.clear()
     h.assertEqual(exports.kora_voice:grantRadioChannels(OFFICER, { 2 }), 1)
     h.assertEqual(Voice.store.getRadio(OFFICER), 2)
@@ -390,7 +390,7 @@ h.test('granting permission does not transfer an existing job membership', funct
     h.assertEqual(Voice.store.getRadio(OFFICER), nil)
     h.assertEqual(Voice.policy.grantsOf(OFFICER)[1], 2)
     net.setPlayer(OFFICER, 'unemployed', 'civ', false)
-    h.assertTrue(net.invokeCallback('qbvoice:requestRadio', OFFICER, 2))
+    h.assertTrue(net.invokeCallback('kora_voice:requestRadio', OFFICER, 2))
     TriggerEvent('QBCore:Server:OnPlayerUnload', OFFICER)
     h.assertEqual(Voice.store.getRadio(OFFICER), 2)
 end)

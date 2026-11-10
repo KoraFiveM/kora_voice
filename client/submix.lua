@@ -43,7 +43,7 @@ local function create(kind)
     -- apply every effect parameter to submix -1 and then route speakers into
     -- it, which silences them -- a far worse failure than no effect at all.
     if not id or id < 0 then
-        print(('[qbvoice] could not create the %s submix; audio will be unprocessed'):format(kind))
+        print(('[kora_voice] could not create the %s submix; audio will be unprocessed'):format(kind))
         return nil
     end
 

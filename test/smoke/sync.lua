@@ -22,7 +22,7 @@ dofile('client/targets.lua')
 -- Scripted BEFORE client/sync.lua loads, because its catch-up resync runs
 -- during the load: the client asks the server to re-state everything that
 -- changed before its subscriptions existed.
-net.setCallbackResponse('qbvoice:sync', { radio = 5, call = false })
+net.setCallbackResponse('kora_voice:sync', { radio = 5, call = false })
 
 dofile('client/sync.lua')
 dofile('client/exports.lua')
@@ -89,12 +89,12 @@ h.test('a channel change is announced under both event names', function()
     local names = {}
     for _, event in ipairs(net.localEvents) do names[event.name] = event.args[1] end
 
-    h.assertEqual(names['qbvoice:client:radioChanged'], 9, 'the qbvoice event, for new code')
+    h.assertEqual(names['kora_voice:client:radioChanged'], 9, 'the kora_voice event, for new code')
     h.assertEqual(names['pma-voice:setRadioChannel'], 9,
         'and pma-voices, so a radio UI written against it does not show a stale channel')
 end)
 
-h.test('the leave event carries 0 for pma-voice and false for qbvoice', function()
+h.test('the leave event carries 0 for pma-voice and false for kora_voice', function()
     net.fireBagChange(BAG, Config.state.radio, 9)
     net.clear()
     net.fireBagChange(BAG, Config.state.radio, false)
@@ -102,17 +102,17 @@ h.test('the leave event carries 0 for pma-voice and false for qbvoice', function
     local names = {}
     for _, event in ipairs(net.localEvents) do names[event.name] = event.args[1] end
 
-    h.assertEqual(names['qbvoice:client:radioChanged'], false, 'false for qbvoice consumers')
+    h.assertEqual(names['kora_voice:client:radioChanged'], false, 'false for kora_voice consumers')
     -- pma-voice used 0 for "no channel", and a UI written against it compares
     -- against 0 rather than against false.
     h.assertEqual(names['pma-voice:setRadioChannel'], 0, '0 for pma-voice consumers')
 end)
 
 h.test('a roster is taken verbatim, never merged with the previous one', function()
-    net.deliverPush('qbvoice:radio:roster', { channel = 3, members = { 1, 2, 3 } })
+    net.deliverPush('kora_voice:radio:roster', { channel = 3, members = { 1, 2, 3 } })
     h.assertEqual(#Voice.state.data.radioMembers, 3, 'the first roster applied')
 
-    net.deliverPush('qbvoice:radio:roster', { channel = 3, members = { 1 } })
+    net.deliverPush('kora_voice:radio:roster', { channel = 3, members = { 1 } })
 
     -- A merge would mean members accumulated across pushes, and a member who
     -- was never removed is a voice target for a channel the player has left.
@@ -121,7 +121,7 @@ end)
 
 h.test('the roster push carries the channel and applies it first', function()
     net.fireBagChange(BAG, Config.state.radio, false)
-    net.deliverPush('qbvoice:radio:roster', { channel = 4, members = { 1, 2 } })
+    net.deliverPush('kora_voice:radio:roster', { channel = 4, members = { 1, 2 } })
 
     -- On a resource restart the push can arrive before the bag replicates.
     -- Applying the members first would have them dropped by the channel clear.
@@ -130,15 +130,15 @@ h.test('the roster push carries the channel and applies it first', function()
 end)
 
 h.test('a cleared roster push drops the membership', function()
-    net.deliverPush('qbvoice:radio:roster', { channel = 4, members = { 1, 2 } })
-    net.deliverPush('qbvoice:radio:roster', { channel = false, members = {} })
+    net.deliverPush('kora_voice:radio:roster', { channel = 4, members = { 1, 2 } })
+    net.deliverPush('kora_voice:radio:roster', { channel = false, members = {} })
 
     h.assertEqual(Voice.state.data.radio, false, 'the leaver was told, since no roster reaches them')
     h.assertEqual(#Voice.state.data.radioMembers, 0, 'and their targets are gone')
 end)
 
 h.test('garbage in a roster is dropped rather than becoming a voice target', function()
-    net.deliverPush('qbvoice:radio:roster', { channel = 4, members = { 1, 'police', -3, 0, 6 } })
+    net.deliverPush('kora_voice:radio:roster', { channel = 4, members = { 1, 'police', -3, 0, 6 } })
 
     h.assertEqual(#Voice.state.data.radioMembers, 2, 'only the two real server ids survived')
 end)

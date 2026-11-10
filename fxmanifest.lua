@@ -3,8 +3,6 @@ game 'gta5'
 lua54 'yes'
 
 name 'kora_voice'
--- Keep the legacy resource name resolvable for exports['qbvoice'] callers.
-provide 'qbvoice'
 author 'qbcore2'
 version '0.1.0'
 description 'First-party voice: proximity modes, server-authoritative radio channels, phone calls, submixes and wall muffling'

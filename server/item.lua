@@ -2,7 +2,7 @@
 --
 -- Using the item only asks the owning client to open its frequency dialog. It
 -- does NOT touch membership: the join itself is a client REQUEST through
--- `qbvoice:requestRadio`, like every other request. Nothing in this file calls
+-- `kora_voice:requestRadio`, like every other request. Nothing in this file calls
 -- `Voice.api.assign` or any other trusted function.
 
 local function registerUseable()
@@ -14,13 +14,13 @@ local function registerUseable()
     -- onResourceStart handler below registers again once kora_inventory is up.
     local ok, err = pcall(function()
         exports.kora_core:createUseable(item, function(src)
-            TriggerClientEvent('qbvoice:client:openRadio', src)
+            TriggerClientEvent('kora_voice:client:openRadio', src)
             return true
         end)
     end)
 
     if not ok then
-        print(('[qbvoice] could not register the %s use handler: %s'):format(item, tostring(err)))
+        print(('[kora_voice] could not register the %s use handler: %s'):format(item, tostring(err)))
     end
 end
 

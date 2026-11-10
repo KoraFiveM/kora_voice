@@ -176,7 +176,7 @@ h.test('a resync re-states everything one player needs', function()
     -- This is what makes `ensure kora_voice` against a live server work: the
     -- client arms its subscriptions after the session starts and has missed
     -- every change before that.
-    local published = net.invokeCallback('qbvoice:sync', A)
+    local published = net.invokeCallback('kora_voice:sync', A)
 
     h.assertEqual(published.radio, 7, 'the answer carries the radio channel')
     h.assertEqual(published.call, 5551234, 'and the call channel')
@@ -199,7 +199,7 @@ end)
 h.test('membership changes announce themselves to other server resources', function()
     reset()
     local seen = {}
-    AddEventHandler('qbvoice:server:radioChanged', function(src, channel, previous)
+    AddEventHandler('kora_voice:server:radioChanged', function(src, channel, previous)
         seen[#seen + 1] = { src = src, channel = channel, previous = previous }
     end)
 
@@ -218,7 +218,7 @@ h.test('a bucket change republishes both rosters without changing membership', f
     Voice.api.assignCall(A, 5551234); Voice.api.assignCall(B, 5551234)
     net.clear()
     net.setBucket(B, 12)
-    TriggerEvent('qbvoice:server:bucketChanged', B)
+    TriggerEvent('kora_voice:server:bucketChanged', B)
 
     h.assertEqual(#net.pushesTo(A), 2, 'old bucket receives both rosters')
     h.assertEqual(#net.pushesTo(B), 2, 'new bucket receives both rosters')
@@ -234,11 +234,11 @@ h.test('a bucket change republishes both rosters without changing membership', f
     h.assertEqual(#net.bagWrites, 0, 'membership bags are unchanged')
     h.assertEqual(Voice.store.getRadio(B), 7)
     h.assertEqual(Voice.store.getCall(B), 5551234)
-    h.assertEqual(net.netHandlers['qbvoice:server:bucketChanged'], nil, 'notification is server-local')
+    h.assertEqual(net.netHandlers['kora_voice:server:bucketChanged'], nil, 'notification is server-local')
 
     net.clear()
     net.setBucket(B, 0)
-    TriggerEvent('qbvoice:server:bucketChanged', B)
+    TriggerEvent('kora_voice:server:bucketChanged', B)
     for _, push in ipairs(net.pushes) do h.assertEqual(#push.payload.members, 2, 'restored peers are republished') end
 end)
 
@@ -266,7 +266,7 @@ h.test('bucket refresh preserves cross-instance channels when enforcement is dis
     net.clear()
     Config.buckets.enforce = false
     net.setBucket(B, 12)
-    TriggerEvent('qbvoice:server:bucketChanged', B)
+    TriggerEvent('kora_voice:server:bucketChanged', B)
     local refresh = net.registeredExports.refreshVoiceTargets
     h.assertTrue(type(refresh) == 'function')
     h.assertEqual(refresh(B), true)

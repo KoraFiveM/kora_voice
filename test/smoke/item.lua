@@ -30,7 +30,7 @@ end)
 h.test('using the item asks the owning client to open the dialog', function()
     local ret = registrations[1].fn(7, { name = 'radio' })
 
-    h.assertEqual(clientEvents[#clientEvents].name, 'qbvoice:client:openRadio', 'the client is told to open the dialog')
+    h.assertEqual(clientEvents[#clientEvents].name, 'kora_voice:client:openRadio', 'the client is told to open the dialog')
     h.assertEqual(clientEvents[#clientEvents].src, 7, 'addressed to the player who used the item')
     h.assertTrue(ret ~= false, 'and does not report a rejected use to the inventory')
 end)

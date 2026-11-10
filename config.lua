@@ -140,7 +140,7 @@ Config.submix = {
     -- Received radio audio: band-limited and ring-modulated, the classic
     -- handheld sound.
     radio = {
-        name = 'qbvoice_radio',
+        name = 'kora_voice_radio',
         effectSlot = 0,
         params = {
             freq_low    = 300.0,
@@ -157,7 +157,7 @@ Config.submix = {
     -- and harsh rather than thin. Distinct submix so a player on the radio and
     -- a player on a megaphone never sound the same.
     megaphone = {
-        name = 'qbvoice_megaphone',
+        name = 'kora_voice_megaphone',
         effectSlot = 1,
         params = {
             freq_low    = 300.0,
@@ -227,8 +227,8 @@ Config.buckets = {
 -- keep reading the last channel forever and keep rendering itself on a channel
 -- it had left.
 Config.state = {
-    radio = 'qbvoice:radio', -- integer channel, or false for "not on a radio"
-    call  = 'qbvoice:call',  -- integer channel, or false for "not in a call"
+    radio = 'kora_voice:radio', -- integer channel, or false for "not on a radio"
+    call  = 'kora_voice:call',  -- integer channel, or false for "not in a call"
 
     -- Replicate membership to every client, not just the owner. FiveM has no
     -- owner-only player bag: a replicated key is visible to everybody. That is

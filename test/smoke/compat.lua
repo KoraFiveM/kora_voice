@@ -52,7 +52,7 @@ h.test('the pma-voice server surface is registered under its own identity', func
     end
 end)
 
-h.test('qbvoice registers the same surface under its own name', function()
+h.test('kora_voice registers the same surface under its own name', function()
     for _, name in ipairs({
         'addChannelCheck', 'removeChannelCheck',
         'setPlayerRadio', 'addPlayerToRadio', 'removePlayerFromRadio',

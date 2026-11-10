@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs every qbvoice smoke test with plain Lua (no busted, no FXServer, no
+# Runs every kora_voice smoke test with plain Lua (no busted, no FXServer, no
 # Mumble, no database). Exits non-zero on any failure.
 #
 # Each file loads only the realm it exercises: the server suites dofile
