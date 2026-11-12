@@ -4,7 +4,7 @@ lua54 'yes'
 
 name 'kora_voice'
 author 'qbcore2'
-version '0.1.0'
+version '0.2.0'
 description 'First-party voice: proximity modes, server-authoritative radio channels, phone calls, submixes and wall muffling'
 
 -- kora_lib supplies keybinds, state-bag subscriptions, notifications, timers and
