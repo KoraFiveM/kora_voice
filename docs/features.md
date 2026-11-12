@@ -1,6 +1,6 @@
 ---
 title: Features
-sidebar_position: 3
+sidebar_position: 6
 ---
 
 # Features
@@ -9,7 +9,7 @@ sidebar_position: 3
 
 Channel membership lives on the server. A client may send a request; the server decides, stores and publishes the result. Everything a player can hear comes from a Mumble voice target built from what the server published, so a client that could write its own membership could listen to any channel.
 
-- `Config.radio.restricted` is evaluated only on the server, and no export, push or state-bag key in this resource carries it to a client. (`config.lua` itself is a shared script; see [Configuration](./configuration.md).)
+- `Config.radio.restricted` is evaluated only on the server, and no export, push or state-bag key in this resource carries it to a client. (`config.lua` itself is a shared script; see [Configuration](./api/configuration.md).)
 - Two server entry points: `assign` (trusted, no policy check, reachable only through server exports) and `request` (untrusted, policy enforced, used by the client callbacks and the pma-voice compatibility events). The two are deliberately different function names rather than one function with a trust flag.
 - Client net events and callbacks always act on `source`, never on a player id in the payload.
 - Clients replace their roster with exactly what the server pushed and never extend it.

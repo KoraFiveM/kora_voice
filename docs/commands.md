@@ -1,9 +1,54 @@
 ---
-title: Commands and keybinds
-sidebar_position: 5
+title: "Commands"
+sidebar_position: 4
 ---
 
-# Commands and keybinds
+
+# Commands
+
+No in-game chat commands. Two console-only rcon commands exist purely for development and are completely absent unless `Config.debug = true`.
+
+## Debug commands (Config.debug only)
+
+### `voicedump`
+
+Prints every occupied radio channel and its current member list to the server console.
+
+| Field | Details |
+| --- | --- |
+| Context | Server console only (`src == 0`) |
+| Arguments | none |
+| Access | Server console only; refuses any in-game caller. Only registered at all when `Config.debug` is true, so a production server carries no command surface that could leak which frequencies are occupied. |
+
+**Example**
+
+```text
+voicedump
+```
+
+**Result**
+
+One console line per occupied channel: `[kora_voice] radio <n>: <src, src, ...>`.
+
+### `voicerequest <src> <channel|0>`
+
+Runs a radio join request AS that player, through the exact same untrusted/policy-checked path a real client uses (not the trusted assign path) — intended to let you exercise the policy layer from the console.
+
+| Field | Details |
+| --- | --- |
+| Context | Server console only |
+| Arguments | src — required, target player's server id. channel — required; 0 (or omitted/invalid) requests leaving the radio. |
+| Access | Server console only. |
+
+**Example**
+
+```text
+voicerequest 3 2
+```
+
+**Result**
+
+Prints `[kora_voice] request(3, 2) -> true` or `-> false (<reason>)` to the console.
 
 ## Keybinds
 
@@ -17,14 +62,9 @@ All keybinds are registered through `Kora.keybind.add`, so they appear in FiveM'
 
 No keybind changes channel membership.
 
-## Console commands
+## Console command registration
 
 There are no player commands. Two console-only commands are registered only when `Config.debug` is true; with it off the file registers nothing. Both are registered as restricted commands and both return immediately when run by a player (`source` is not 0), so they work from the server console only.
-
-| Command | Description |
-| --- | --- |
-| `voicedump` | Prints every occupied radio channel and its member server ids. |
-| `voicerequest <src> <channel>` | Runs a request for player `src` through the untrusted `request` path (policy enforced) and prints the result. A channel of 0 leaves. |
 
 ## Permissions
 

@@ -28,7 +28,7 @@ sidebar_position: 7
 
 | Event | Description |
 | --- | --- |
-| `kora_voice:server:bucketChanged` | Takes a player source and re-pushes that player's rosters. See `refreshVoiceTargets` in [Exports](./exports.md). |
+| `kora_voice:server:bucketChanged` | Takes a player source and re-pushes that player's rosters. See `refreshVoiceTargets` in [Exports](./api/api.md). |
 | `playerDropped` | Forgets the player's memberships and grants and re-pushes the rosters they were in. |
 | `QBCore:Server:OnPlayerUnload` | Removes a radio membership that was approved by the static job rules. See [Features](./features.md). |
 | `playerJoining` | Writes the cleared state-bag values for the joining player. |
