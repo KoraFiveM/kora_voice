@@ -24,7 +24,7 @@ The central design rule is the authority boundary: channel membership lives on t
 - [API reference](./api/index.md) - the module overview table.
   - [Proximity modes and channel helpers](./api/modes-channels.md) - `Voice.modes` and `Voice.channels` (shared).
   - [Server: store, policy and publish](./api/policy.md) - `Voice.store`, `Voice.policy`, `Voice.publish`.
-  - [Server: API and client surface](./api/api.md) - every server and client export, callbacks, and an export quick reference.
+  - [Server: API and client surface](./api/exports.md) - every server and client export, callbacks, and an export quick reference.
   - [Client: proximity, submix and voice targets](./api/client-targets.md) - `Voice.state`, `Voice.proximity`, `Voice.submix`, `Voice.targets`.
   - [Configuration](./api/configuration.md) - every `Config` option with defaults and apply timing.
 

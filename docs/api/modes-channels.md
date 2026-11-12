@@ -363,4 +363,4 @@ Shared realm only; neither module touches a native or any per-player state.
 ## Related guides
 
 - [Server: store, policy & publish](./policy.md)
-- [Server: API & client surface](./api.md)
+- [Server: API & client surface](./exports.md)

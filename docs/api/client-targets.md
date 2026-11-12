@@ -262,5 +262,5 @@ Client-only in every one of these files. `Voice.targets.rebuild` fires a synchro
 
 ## Related guides
 
-- [Server: API & client surface](./api.md)
+- [Server: API & client surface](./exports.md)
 - [Proximity modes & channel helpers](./modes-channels.md)

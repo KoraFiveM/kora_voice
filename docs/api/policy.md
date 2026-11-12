@@ -259,4 +259,4 @@ Server-only in every file here. `Voice.store._reset()` and `Voice.policy._reset(
 ## Related guides
 
 - [Proximity modes & channel helpers](./modes-channels.md)
-- [Server: API & client surface](./api.md)
+- [Server: API & client surface](./exports.md)

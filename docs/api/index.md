@@ -9,6 +9,6 @@ sidebar_position: 1
 | --- | --- | --- |
 | [Proximity modes & channel helpers](./modes-channels.md) | `Voice.modes / Voice.channels` | shared |
 | [Server: store, policy & publish](./policy.md) | `Voice.store / Voice.policy / Voice.publish` | server |
-| [Server: API & client surface](./api.md) | `exports.kora_voice` | server, client |
+| [Server: API & client surface](./exports.md) | `exports.kora_voice` | server, client |
 | [Client: proximity, submix & voice targets](./client-targets.md) | `Voice.state / Voice.proximity / Voice.submix / Voice.targets` | client |
 | [Configuration](./configuration.md) | `Config` | shared |
