@@ -8,7 +8,7 @@
 local dialogOpen = false -- one dialog at a time, so repeated uses cannot stack
 
 local function notify(message, kind)
-    Kora.notify.send({ title = 'Radio', message = message, type = kind or 'info' })
+    Kora.notify.send({ title = Kora.lang('title.radio'), message = message, type = kind or 'info' })
 end
 
 ---@return integer|nil whole number, or nil when the input is not one
@@ -20,7 +20,7 @@ end
 
 local function leaveFrequency()
     if exports.kora_voice:removePlayerFromRadio() then
-        notify('You left the frequency.')
+        notify(Kora.lang('notify.left_frequency'))
     end
 end
 
@@ -30,15 +30,15 @@ local function openFrequencyDialog()
     local result = Kora.nui.openInputDialog({
         {
             id = 'channel',
-            label = 'Frequency',
+            label = Kora.lang('dialog.frequency'),
             type = 'number',
             min = 0,
             max = Config.radio.maxChannel,
             wholeNumber = true,
             default = current,
-            description = '0 leaves the channel',
+            description = Kora.lang('dialog.zero_leaves_channel'),
         },
-    }, 'Radio')
+    }, Kora.lang('title.radio'))
 
     -- Cancelled (or the dialog timed out): change nothing.
     if not result or not result.values then return end
@@ -48,19 +48,19 @@ local function openFrequencyDialog()
 
     local channel = parseFrequency(raw)
     if channel == nil then
-        return notify('Enter a whole frequency number.', 'error')
+        return notify(Kora.lang('error.whole_frequency'), 'error')
     end
 
     if channel == 0 then return leaveFrequency() end
 
     if channel < Config.radio.minChannel or channel > Config.radio.maxChannel then
-        return notify(('Frequency must be between %d and %d.'):format(Config.radio.minChannel, Config.radio.maxChannel), 'error')
+        return notify(Kora.lang('error.frequency_range', Config.radio.minChannel, Config.radio.maxChannel), 'error')
     end
 
     -- Suspends until the server answers. The server re-validates the channel.
     local ok, reason = exports.kora_voice:addPlayerToRadio(channel)
     if ok then
-        notify(('Connected to frequency %d'):format(channel))
+        notify(Kora.lang('notify.connected_frequency', channel))
     elseif reason then
         -- A refusal carries the server's generic reason. A timeout (no reason)
         -- stays silent: inventing a message would tell the player something the

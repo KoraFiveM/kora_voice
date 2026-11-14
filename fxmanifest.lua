@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 name 'kora_voice'
-author 'qbcore2'
+author 'Kora'
 version '0.2.1'
 description 'First-party voice: proximity modes, server-authoritative radio channels, phone calls, submixes and wall muffling'
 
@@ -22,6 +22,8 @@ dependency 'kora_core'
 provide 'pma-voice'
 
 shared_script '@kora_lib/init.lua'
+
+files { 'locales/*.lua' }
 
 shared_scripts {
     'config.lua',
