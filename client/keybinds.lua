@@ -11,7 +11,7 @@ Voice = Voice or {}
 
 Kora.keybind.add({
     name = 'kora_voice_proximity',
-    description = 'Voice: cycle talk range (whisper/normal/shout)',
+    description = Kora.lang('keybind.cycle_proximity'),
     defaultKey = Config.keybinds.cycleProximity,
     onPressed = function()
         Voice.proximity.cycle(1)
@@ -27,7 +27,7 @@ end
 
 Kora.keybind.add({
     name = 'kora_voice_radio',
-    description = 'Voice: talk on the radio (push to talk)',
+    description = Kora.lang('keybind.radio_talk'),
     defaultKey = Config.keybinds.radioTalk,
 
     onPressed = function()
@@ -68,7 +68,7 @@ Kora.keybind.add({
 
 Kora.keybind.add({
     name = 'kora_voice_megaphone',
-    description = 'Voice: megaphone',
+    description = Kora.lang('keybind.megaphone'),
     -- Unbound by default: a megaphone belongs to a vehicle or a prop, and a
     -- resource that owns one calls exports.kora_voice:setMegaphone instead. The
     -- bind exists so a server that wants a bare key can set one in config

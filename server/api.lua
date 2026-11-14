@@ -107,14 +107,14 @@ end
 ---@param channel integer|nil
 ---@return boolean ok, string|nil error
 function A.assign(src, channel)
-    if type(src) ~= 'number' then return false, 'kora_voice: src must be a number' end
+    if type(src) ~= 'number' then return false, Kora.lang('error.invalid_source') end
 
     local normalised = Voice.channels.normalise(channel)
     -- A channel that was GIVEN but did not normalise is a caller bug worth
     -- reporting, not a silent "leave the radio". Only an explicit nil/false
     -- means leave.
     if channel ~= nil and channel ~= false and not normalised then
-        return false, ('kora_voice: %s is not a valid radio channel'):format(tostring(channel))
+        return false, Kora.lang('error.invalid_radio_channel', tostring(channel))
     end
 
     characterRadio[src] = nil
@@ -155,7 +155,7 @@ end
 ---@param channel integer|nil
 ---@return boolean ok, string|nil reason
 function A.requestClient(src, channel)
-    if not consumeClientRequest(src, 'radio') then return false, 'Voice request limit reached.' end
+    if not consumeClientRequest(src, 'radio') then return false, Kora.lang('error.request_limit') end
     return A.request(src, channel)
 end
 
@@ -163,7 +163,7 @@ end
 ---@param channel integer|nil
 ---@return boolean removed, string|nil reason
 function A.removeRadioClient(src, channel)
-    if not consumeClientRequest(src, 'radio') then return false, 'Voice request limit reached.' end
+    if not consumeClientRequest(src, 'radio') then return false, Kora.lang('error.request_limit') end
     return A.removeFromRadio(src, channel)
 end
 
@@ -171,7 +171,7 @@ end
 ---@param channel integer|nil
 ---@return boolean removed, string|nil reason
 function A.removeCallClient(src, channel)
-    if not consumeClientRequest(src, 'call') then return false, 'Voice request limit reached.' end
+    if not consumeClientRequest(src, 'call') then return false, Kora.lang('error.request_limit') end
     return A.removeFromCall(src, channel)
 end
 
@@ -185,11 +185,11 @@ end
 ---@param channel integer|nil
 ---@return boolean ok, string|nil error
 function A.assignCall(src, channel)
-    if type(src) ~= 'number' then return false, 'kora_voice: src must be a number' end
+    if type(src) ~= 'number' then return false, Kora.lang('error.invalid_source') end
 
     local normalised = Voice.channels.normaliseCall(channel)
     if channel ~= nil and channel ~= false and not normalised then
-        return false, ('kora_voice: %s is not a valid call channel'):format(tostring(channel))
+        return false, Kora.lang('error.invalid_call_channel', tostring(channel))
     end
 
     commitCall(src, normalised)
@@ -386,7 +386,7 @@ end)
 ---@return string|nil reason
 local function refreshVoiceTargets(src)
     src = tonumber(src)
-    if not src then return false, 'kora_voice: src must be a number' end
+    if not src then return false, Kora.lang('error.invalid_source') end
     if not Config.buckets.enforce then return true end
 
     Voice.publish.roster('radio', Voice.store.getRadio(src))

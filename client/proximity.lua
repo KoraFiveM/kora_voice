@@ -69,8 +69,8 @@ function Prox.cycle(step)
     if Config.proximity.notify then
         local mode = Voice.modes.get(index)
         Kora.notify.send({
-            title = 'Voice',
-            message = ('%s (%.0fm)'):format(mode and mode.label or '?', range),
+            title = Kora.lang('title.voice'),
+            message = Kora.lang('notify.proximity_mode', mode and mode.label or '?', range),
             type = 'info',
         })
     end
