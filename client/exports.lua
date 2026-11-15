@@ -154,7 +154,7 @@ exports('setVoiceProperty', function(property, value)
         -- Reported rather than silently ignored: an unknown property is a
         -- typo'd call site, and a silently dropped setVoiceProperty presents as
         -- "the volume slider does nothing".
-        print(('[kora_voice] setVoiceProperty: unknown property %s'):format(tostring(property)))
+        Kora.logging.warn('exports.unknown_voice_property', 'setVoiceProperty called with an unknown property', { property = tostring(property) })
         return false
     end
 

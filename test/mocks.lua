@@ -197,7 +197,17 @@ function M.install()
     -- --- kora_lib ---
     local callbackResponses = {}
 
+    -- Spy logger: every Kora.logging.<level> call is recorded in Kora.logging.calls.
+    local logging = { calls = {}, isEnabled = function() return true end }
+    for _, level in ipairs({ 'trace', 'debug', 'info', 'warn', 'error', 'fatal' }) do
+        logging[level] = function(event, message, fields)
+            logging.calls[#logging.calls + 1] = { level = level, event = event, message = message, fields = fields }
+            return true
+        end
+    end
+
     _G.Kora = {
+        logging = logging,
         compat = { provideExport = function(identity, name, fn)
             AddEventHandler(('__cfx_export_%s_%s'):format(identity, name), function(setCallback)
                 setCallback(fn)

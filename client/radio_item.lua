@@ -77,7 +77,7 @@ RegisterNetEvent('kora_voice:client:openRadio', function()
         local ok, err = pcall(openFrequencyDialog)
         dialogOpen = false
         if not ok then
-            print(('[kora_voice] radio item dialog failed: %s'):format(tostring(err)))
+            Kora.logging.error('radio_item.dialog_failed', 'Radio item dialog failed', { error = tostring(err) })
         end
     end)
 end)

@@ -53,7 +53,7 @@ local function notify(what)
     for _, handler in ipairs(listeners) do
         local ok, err = pcall(handler, what, data)
         if not ok then
-            print(('[kora_voice] state listener errored on %s: %s'):format(tostring(what), tostring(err)))
+            Kora.logging.error('state.listener_errored', 'A state listener errored', { what = tostring(what), error = tostring(err) })
         end
     end
 end

@@ -164,8 +164,10 @@ function P.canJoin(src, channel)
             -- broken one, and taking voice down with it turns one bug into a
             -- server-wide outage.
             if not ok then
-                print(('[kora_voice] radio policy hook from %s errored: %s')
-                    :format(tostring(entry.resource), tostring(allowed)))
+                Kora.logging.error('policy.hook_errored', 'A radio policy hook errored and was skipped', {
+                    hookResource = tostring(entry.resource),
+                    error = tostring(allowed),
+                })
             elseif allowed == false then
                 return false, type(reason) == 'string' and reason or Config.radio.refusedMessage
             elseif allowed == true then
