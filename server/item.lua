@@ -20,7 +20,7 @@ local function registerUseable()
     end)
 
     if not ok then
-        print(('[kora_voice] could not register the %s use handler: %s'):format(item, tostring(err)))
+        Kora.logging.error('item.use_handler_failed', 'Could not register a radio item use handler', { item = tostring(item), error = tostring(err) })
     end
 end
 

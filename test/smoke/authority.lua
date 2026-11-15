@@ -149,6 +149,19 @@ h.test('an erroring policy hook abstains instead of taking voice down', function
     h.assertFalse(net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 2), 'and restrictions still hold')
 end)
 
+h.test('an erroring policy hook is reported through Kora.logging.error with the error in fields', function()
+    reset()
+    Kora.logging.calls = {}
+    Voice.policy.addHook(function() error('broken job resource') end)
+    net.invokeCallback('kora_voice:requestRadio', CIVILIAN, 400)
+
+    local call = Kora.logging.calls[1]
+    h.assertTrue(call ~= nil, 'a logger call was made')
+    h.assertEqual(call.level, 'error', 'level')
+    h.assertEqual(call.event, 'policy.hook_errored', 'event name')
+    h.assertTrue(tostring(call.fields.error):find('broken job resource', 1, true) ~= nil, 'error carried in fields')
+end)
+
 h.test('removing a hook does not renumber anybody elses handle', function()
     reset()
     local first = Voice.policy.addHook(function() return nil end)
