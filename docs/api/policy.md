@@ -19,7 +19,7 @@ A character's state-bag write for `Config.state.radio`/`Config.state.call` alway
 | Term | Meaning |
 | --- | --- |
 | Legacy channel check | `Voice.policy.addChannelCheck(channel, fn)` -- a channel-specific check that owns its frequency outright, evaluated before the generic hook list. Cleared (not silently left open) automatically if the registering resource stops. |
-| characterOwned | True only when `Voice.policy.canJoin` approved a channel via the static `Config.radio.restricted` fallthrough, as opposed to a hook or grant -- this is what lets `commitRadio` auto-clear that membership on `QBCore:Server:OnPlayerUnload` without also clearing a membership a job resource explicitly assigned. |
+| characterOwned | True only when `Voice.policy.canJoin` approved a channel via the static `Config.radio.restricted` fallthrough, as opposed to a hook or grant -- this is what lets `commitRadio` auto-clear that membership on `kora_core:server:playerUnloaded` without also clearing a membership a job resource explicitly assigned. |
 
 ## Functions
 

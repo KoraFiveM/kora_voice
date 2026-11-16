@@ -388,7 +388,7 @@ The pma-voice compatibility surface (`client/compat.lua`) wraps these same funct
 
 ### Functions
 
-Fifteen client exports (thirteen are detailed below; `getCallChannel` and `setCallVolume` are described in the notes of their radio counterparts and in the [export quick reference](#export-quick-reference)).
+Seventeen client exports (fifteen are detailed below; `getCallChannel` and `setCallVolume` are described in the notes of their radio counterparts and in the [export quick reference](#export-quick-reference)).
 
 #### `exports.kora_voice:addPlayerToRadio(channel)`
 
@@ -433,6 +433,29 @@ Leaves the current radio channel. Always permitted.
 ```lua
 exports.kora_voice:removePlayerFromRadio()
 ```
+
+#### `exports.kora_voice:setCallMuted(muted)`
+
+Mutes or unmutes this player's microphone towards the current call only. Proximity and radio are unaffected. Local and self-restricting, so it is not a request to the server. Cleared automatically when the call ends.
+
+**Parameters**
+
+- **`muted`** (`boolean`).
+
+**Returns**
+
+- **`boolean`.** `true` when applied.
+- **`string|nil`.** `not_in_call` when there is no call to mute.
+
+**Example**
+
+```lua
+local ok, reason = exports.kora_voice:setCallMuted(true)
+```
+
+#### `exports.kora_voice:isCallMuted()`
+
+Returns `true` while the call microphone mute is active.
 
 #### `exports.kora_voice:removePlayerFromCall()`
 
@@ -738,6 +761,7 @@ Client exports never change membership directly; the channel ones are requests.
 | `getTalkingMode()` | table | `index`, `name`, `label`, `range` (current range, including megaphone). |
 | `isRadioActive()` | boolean | True while the radio key is held and a channel is set. |
 | `setMegaphone(active)` | boolean | Switches megaphone range on or off; returns whether it changed. Does not fire the `kora_voice:client:megaphone` event (only the keybind does). |
+| `setCallMuted(muted)` | ok, reason | Client. Call-only microphone mute; `not_in_call` when there is no call. `isCallMuted()` reads it. |
 | `setRadioVolume(volume)`, `setCallVolume(volume)` | applied | 0.0 to 1.0, or 0 to 100 (values above 1 are treated as percentages). |
 | `setVoiceProperty(name, value)` | boolean | Sets `radioVolume`, `callVolume`, `micClicks`, `submix`, `talkingMode` or `muffling`. An unknown name prints a console line and returns `false`. |
 | `getVoiceProperty(name)` | any | Reads the same properties, plus `radioChannel` and `callChannel`. nil for unknown names. |

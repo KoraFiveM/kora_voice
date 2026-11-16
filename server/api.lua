@@ -249,8 +249,22 @@ AddEventHandler('playerDropped', function()
     A.drop(source)
 end)
 
-AddEventHandler('QBCore:Server:OnPlayerUnload', function(src)
+---Character unload: a logout or character switch keeps the connection, so
+---`playerDropped` never fires and the membership would otherwise outlive the
+---character. A disconnect is already handled by `A.drop` above, so it is
+---skipped here rather than cleared twice.
+---
+---The call is always cleared (a call belongs to the character's phone). Radio is
+---cleared only when it was approved by the static job rules; trusted, hook and
+---grant memberships are owned by the resource that made them.
+---@param src integer
+---@param _citizenid string|nil
+---@param cause 'logout'|'disconnect'|nil
+AddEventHandler('kora_core:server:playerUnloaded', function(src, _citizenid, cause)
+    if cause == 'disconnect' then return end
+
     if characterRadio[src] then commitRadio(src, nil) end
+    commitCall(src, nil)
 end)
 
 -- All server-side, all trusted. There is no client export that changes

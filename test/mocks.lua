@@ -206,7 +206,20 @@ function M.install()
         end
     end
 
+    -- Kora.lang resolved from the real English locale, so a missing key fails offline.
+    local locale = dofile('locales/en.lua')
+    local function lang(key, ...)
+        local value = locale
+        for part in tostring(key):gmatch('[^.]+') do
+            value = type(value) == 'table' and value[part] or nil
+        end
+        if type(value) ~= 'string' then return tostring(key) end
+        if select('#', ...) > 0 then return value:format(...) end
+        return value
+    end
+
     _G.Kora = {
+        lang = lang,
         logging = logging,
         compat = { provideExport = function(identity, name, fn)
             AddEventHandler(('__cfx_export_%s_%s'):format(identity, name), function(setCallback)
