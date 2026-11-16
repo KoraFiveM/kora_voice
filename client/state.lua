@@ -42,6 +42,11 @@ local data = {
     -- them. Applied to received audio, so they cannot grant anything.
     radioVolume = 1.0,
     callVolume = 1.0,
+
+    -- Call-only microphone mute. Local and self-restricting: it only REMOVES
+    -- the call roster from this client's outgoing target, so it can grant
+    -- nothing and needs no server round trip. Reset when the call ends.
+    callMuted = false,
 }
 
 State.data = data
@@ -120,10 +125,28 @@ function State.setCall(channel)
     if value == data.call then return false end
 
     data.call = value
-    if not value then data.callMembers = {} end
+    if not value then
+        data.callMembers = {}
+        -- A mute belongs to one call; the next call must not start muted.
+        data.callMuted = false
+    end
 
     State.markDirty()
     notify('call')
+    return true
+end
+
+---Mutes or unmutes this player's microphone towards the call only.
+---Proximity and radio transmission are unaffected.
+---@param muted boolean
+---@return boolean changed
+function State.setCallMuted(muted)
+    local value = muted == true
+    if value == data.callMuted then return false end
+
+    data.callMuted = value
+    State.markDirty()
+    notify('callMuted')
     return true
 end
 

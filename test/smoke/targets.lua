@@ -145,6 +145,41 @@ h.test('a call is live without any key, and alongside a radio transmission', fun
     h.assertTrue(target[9], 'and the radio transmission is too, at the same time')
 end)
 
+h.test('a call-only mute removes the call roster and nothing else', function()
+    reset()
+    net.placePlayer(8, 500.0, 0.0, 0.0)
+    net.placePlayer(9, 600.0, 0.0, 0.0)
+    net.placePlayer(10, 2.0, 0.0, 0.0)
+
+    Voice.state.setCall(5551234)
+    Voice.state.setCallMembers({ ME, 8, 10 })
+    Voice.state.setRadio(3)
+    Voice.state.setRadioMembers({ ME, 9 })
+    Voice.state.setRadioTalking(true)
+    Voice.state.setCallMuted(true)
+
+    net.clear()
+    Voice.targets.rebuild()
+
+    local target = added()
+    h.assertFalse(target[8], 'a muted call is not transmitted to the call member')
+    h.assertTrue(target[9], 'the radio transmission is unaffected')
+    h.assertTrue(target[10], 'a call member standing in earshot still hears proximity speech')
+
+    Voice.state.setCallMuted(false)
+    net.clear()
+    Voice.targets.rebuild()
+    h.assertTrue(added()[8], 'unmuting restores the call')
+end)
+
+h.test('the call mute does not outlive the call', function()
+    reset()
+    Voice.state.setCall(5551234)
+    Voice.state.setCallMuted(true)
+    Voice.state.setCall(false)
+    h.assertFalse(Voice.state.data.callMuted, 'ending the call clears the mute')
+end)
+
 h.test('leaving a channel empties the roster locally as well', function()
     reset()
     net.placePlayer(9, 500.0, 0.0, 0.0)

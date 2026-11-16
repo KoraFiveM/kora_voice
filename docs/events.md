@@ -30,7 +30,7 @@ sidebar_position: 7
 | --- | --- |
 | `kora_voice:server:bucketChanged` | Takes a player source and re-pushes that player's rosters. See `refreshVoiceTargets` in [Exports](./api/exports.md). |
 | `playerDropped` | Forgets the player's memberships and grants and re-pushes the rosters they were in. |
-| `QBCore:Server:OnPlayerUnload` | Removes a radio membership that was approved by the static job rules. See [Features](./features.md). |
+| `kora_core:server:playerUnloaded` | Arguments `src, citizenid, cause`. On a logout or character switch (`cause` is `logout`) it clears the call membership and any radio membership approved by the static job rules. A `disconnect` cause is ignored because `playerDropped` already handled it. See [Features](./features.md). |
 | `playerJoining` | Writes the cleared state-bag values for the joining player. |
 | `onResourceStart` | Re-registers the radio item when `kora_inventory` starts. |
 | `onResourceStop` | Disables channel checks owned by the stopped resource. |
