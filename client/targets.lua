@@ -211,7 +211,10 @@ function T.rebuild()
     -- Calls are always live once joined -- holding a key to speak into a phone
     -- is not what a phone is -- and are independent of the radio, so a
     -- transmission and a call are both in the target at once.
-    if Voice.state.data.call then
+    -- A call-only mute drops this contribution and nothing else: a call member
+    -- standing in the proximity grid is still added above, and the radio is
+    -- untouched. Received call audio is unaffected (that is the volume's job).
+    if Voice.state.data.call and not Voice.state.data.callMuted then
         for _, serverId in ipairs(Voice.state.data.callMembers) do
             if serverId ~= me then add(serverId) end
         end

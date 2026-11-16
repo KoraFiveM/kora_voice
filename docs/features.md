@@ -45,7 +45,7 @@ Refusals show `Config.radio.refusedMessage` unless a hook supplied its own reaso
 
 Trusted server exports (`setPlayerRadio`, `addPlayerToRadio`) skip all of this.
 
-A radio membership that was approved purely by the static job rules is "character owned": it is removed when the `QBCore:Server:OnPlayerUnload` event fires for that player (character logout). Memberships assigned through the trusted export, through a hook or through a grant are not removed by that event.
+A radio membership that was approved purely by the static job rules is "character owned": it is removed when `kora_core:server:playerUnloaded` fires for that player with the cause `logout` (character logout or switch). The call membership is always removed at that point, because a call belongs to the character. Memberships assigned through the trusted export, through a hook or through a grant are not removed from the radio by that event. A disconnect is handled by `playerDropped` and is not processed twice.
 
 Grants and memberships are dropped when the player disconnects.
 
@@ -64,6 +64,10 @@ Radio audio is filtered by membership with an earshot exception: a channel membe
 The megaphone submix is created but the resource does not route any speaker through it. The megaphone's effect today is its range: while `setMegaphone` is active, the talk range becomes `Config.submix.megaphone.range` instead of the proximity mode range. See [Troubleshooting](./troubleshooting.md).
 
 `setRadioVolume` and `setCallVolume` apply to the same remote members that are outside the proximity grid. A speaker has a single Mumble volume override, so occlusion and the radio or call volume are combined and the quietest value wins.
+
+## Call microphone mute
+
+`exports.kora_voice:setCallMuted(true)` (client) stops this player's voice being sent to the call members. Only the call contribution to the outgoing voice target is removed: proximity speech still reaches a call member who is standing nearby, and radio transmission is unaffected. It is local and self-restricting, so it grants no audio and needs no server round trip. The mute is cleared automatically when the call ends. Received call audio is not affected; use `setCallVolume` for that. Values above full volume are not supported, so there is no speaker boost.
 
 ## Muffling
 

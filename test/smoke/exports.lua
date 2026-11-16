@@ -35,12 +35,26 @@ h.test('the kora_voice client surface is registered', function()
         'getRadioChannel', 'getCallChannel',
         'setTalkingMode', 'cycleTalkingMode', 'getTalkingMode',
         'isRadioActive', 'setMegaphone',
-        'setRadioVolume', 'setCallVolume',
+        'setRadioVolume', 'setCallVolume', 'setCallMuted', 'isCallMuted',
         'setVoiceProperty', 'getVoiceProperty', 'refreshVoiceTargets',
     }) do
         h.assertTrue(type(net.registeredExports[name]) == 'function',
             ('exports.kora_voice:%s is missing'):format(name))
     end
+end)
+
+h.test('setCallMuted needs a call, reports why, and mutes only the call', function()
+    Voice.state.setCall(false)
+    local ok, reason = exports.kora_voice:setCallMuted(true)
+    h.assertFalse(ok, 'no call, nothing to mute')
+    h.assertEqual(reason, 'not_in_call')
+
+    Voice.state.setCall(5551234)
+    h.assertTrue(exports.kora_voice:setCallMuted(true))
+    h.assertTrue(exports.kora_voice:isCallMuted())
+    h.assertTrue(exports.kora_voice:setCallMuted(false))
+    h.assertFalse(exports.kora_voice:isCallMuted())
+    Voice.state.setCall(false)
 end)
 
 h.test('the pma-voice client identity resolves to this resource', function()

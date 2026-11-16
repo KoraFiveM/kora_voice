@@ -105,6 +105,28 @@ exports('setMegaphone', function(active)
     return changed
 end)
 
+---Mutes or unmutes this player's microphone towards the current call only.
+---
+---Local and self-restricting, so it is not a request: it only removes the call
+---roster from this client's outgoing voice target. Proximity and radio are
+---unaffected, and the mute is cleared when the call ends.
+---@param muted boolean
+---@return boolean ok, string|nil reason false with a reason when there is no call to mute
+exports('setCallMuted', function(muted)
+    if not Voice.state.data.call then
+        -- Nothing to mute, and a stale mute must not survive into the next call.
+        return false, 'not_in_call'
+    end
+
+    Voice.state.setCallMuted(muted)
+    return true
+end)
+
+---@return boolean
+exports('isCallMuted', function()
+    return Voice.state.data.callMuted == true
+end)
+
 ---@param volume number 0.0-1.0, or 0-100
 ---@return number applied
 exports('setRadioVolume', function(volume)

@@ -17,7 +17,7 @@ Three separate FiveM mechanisms are involved; each is satisfied differently.
 
 Server exports under the `pma-voice` name: `addChannelCheck`, `removeChannelCheck`, `setPlayerRadio`, `addPlayerToRadio`, `removePlayerFromRadio`, `setPlayerCall`, `removePlayerFromCall`, `getPlayersInRadioChannel`, `getPlayersInCall`, `getRadioChannel`, `getCallChannel`.
 
-Client exports under the `pma-voice` name: `setVoiceProperty`, `getVoiceProperty`, `setRadioVolume`, `setCallVolume`, `setTalkingMode`, `setRadioChannel`, `addPlayerToRadio`, `removePlayerFromRadio`, `removePlayerFromCall`, `getRadioChannel`, `getCallChannel`. The client channel functions are requests that go through the server.
+Client exports under the `pma-voice` name: `setVoiceProperty`, `getVoiceProperty`, `setRadioVolume`, `setCallVolume`, `setTalkingMode`, `setRadioChannel`, `addPlayerToRadio`, `removePlayerFromRadio`, `removePlayerFromCall`, `getRadioChannel`, `getCallChannel`. The client channel functions are requests that go through the server. `setCallMuted` and `isCallMuted` are kora_voice additions with no pma-voice equivalent, and are not registered under the `pma-voice` name.
 
 ## Differences from pma-voice
 
